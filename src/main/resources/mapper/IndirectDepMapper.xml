@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="neu.lab.dependency.mapper.IndirectDepMapper">
+    <resultMap id="indirectDepResultMap" type="neu.lab.dependency.pojo.IndirectDep">
+        <id property="id" column="id"/>
+        <result property="groupId" column="groupId" jdbcType="VARCHAR" javaType="String"/>
+        <result property="artifactId" column="artifactId" jdbcType="VARCHAR" javaType="String"/>
+        <result property="num" column="num" jdbcType="INTEGER" javaType="int"/>
+    </resultMap>
+
+    <insert id="insertDepJar" parameterType="IndirectDep">
+        insert into indirectDep(groupId, artifactId, num) values(#{groupId}, #{artifactId}, #{num})
+    </insert>
+
+    <update id="updateDepJar" parameterType="IndirectDep">
+        update indirectDep set num = #{num} where groupId = #{groupId} and artifactId = #{artifactId}
+    </update>
+
+    <select id="selectDepJar" parameterType="string" resultType="IndirectDep">
+        select * from indirectDep where groupId = #{arg0} and artifactId = #{arg1}
+    </select>
+</mapper>
