@@ -1,6 +1,6 @@
 package neu.lab.dependency.soot;
 
-import neu.lab.dependency.container.DepJars;
+import neu.lab.dependency.util.MavenUtil;
 import neu.lab.dependency.util.SootUtil;
 import soot.*;
 import soot.jimple.toolkits.callgraph.CHATransformer;
@@ -26,7 +26,7 @@ public class RiskCgTf extends SceneTransformer {
 
     @Override
     protected void internalTransform(String args0, Map<String, String> args1) {
-        //        MavenUtil.i().getLog().info("RiskCgTf start...");
+//        MavenUtil.i().getLog().info("RiskCgTf start...");
         System.out.println("RiskCgTf start...");
         Map<String, String> cgMap = new HashMap<>();
         cgMap.put("enabled", "true");

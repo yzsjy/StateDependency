@@ -39,6 +39,16 @@ public class ArtifactResolver {
         return path;
     }
 
+    public String getJarPath(String groupId, String artifactId, String version) {
+        String path;
+        String repository = mvnGetRepository();
+        path = repository
+                + File.separator + groupId.replace(".", File.separator) + File.separator
+                + artifactId.replace(".", File.separator) + File.separator
+                + version + File.separator + artifactId + "-" + version + ".jar";
+        return path;
+    }
+
     public boolean mvnGetArtifact(String groupId, String artifactId, String version) {
         System.out.println("Start to get target dependency...");
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();

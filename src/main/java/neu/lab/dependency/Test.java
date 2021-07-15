@@ -15,7 +15,7 @@ import java.util.Set;
  */
 public class Test {
     public static void main(String[] args) {
-        String projPath = "D:\\githubProject\\alexa-skills-kit-sdk-for-java\\";
+        String projPath = "D:\\githubProject\\commons-vfs\\";
         Conflicts.init(projPath);
         String[] splits = projPath.split("\\\\");
         Conflicts.i().generateGraphs(splits[splits.length - 1]);
@@ -30,14 +30,17 @@ public class Test {
                     System.out.println(pom.getSig());
                 }
             }
+            System.out.println(conflict.getSafeVersion());
             System.out.println();
         }
+//        getCallGraph();
+
     }
 
-    public void getCallGraph() {
+    public static void getCallGraph() {
         List<String> paths = new ArrayList<>();
         String jarPath = "C:\\Users\\SUNJUNYAN\\.m2\\repository\\org\\apache\\maven\\shared\\maven-dependency-tree\\2.1\\maven-dependency-tree-2.1.jar";
-        String hostPath = "D:\\WeChat\\WeChat Files\\q234552005\\FileStorage\\File\\2021-06\\demo-maven-plugin-3.0\\target\\classes";
+        String hostPath = "D:\\IdeaProjects\\Decca\\target\\classes";
         Set<String> mthds = SootRiskCg.i().cmpCg(jarPath, hostPath);
         for (String mthd : mthds) {
             System.out.println(mthd);
