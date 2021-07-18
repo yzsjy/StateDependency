@@ -15,7 +15,7 @@ import java.util.Set;
  */
 public class Test {
     public static void main(String[] args) {
-        String projPath = "D:\\githubProject\\commons-vfs\\";
+        String projPath = "D:\\githubProject\\atlas\\";
         Conflicts.init(projPath);
         String[] splits = projPath.split("\\\\");
         Conflicts.i().generateGraphs(splits[splits.length - 1]);
@@ -30,7 +30,7 @@ public class Test {
                     System.out.println(pom.getSig());
                 }
             }
-            System.out.println(conflict.getSafeVersion());
+            System.out.println(conflict.getSig() + " safe version : " + conflict.getSafeVersion());
             System.out.println();
         }
 //        getCallGraph();

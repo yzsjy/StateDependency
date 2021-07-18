@@ -1,6 +1,5 @@
 package neu.lab.dependency.pom;
 
-import neu.lab.dependency.vo.ArtifactResolver;
 import neu.lab.dependency.vo.Conflict;
 
 import java.util.List;
@@ -16,6 +15,16 @@ public class UnifyVersions {
         this.conflicts = conflicts;
     }
 
+    public void repairConflicts() {
+        for (Conflict conflict : conflicts) {
+            repairConflict(conflict);
+        }
+    }
+
+    public void repairConflict(Conflict conflict) {
+        String version = conflict.getSafeVersion();
+        boolean isLocalVersion = conflict.isLocalVersion();
+    }
 
 
 }

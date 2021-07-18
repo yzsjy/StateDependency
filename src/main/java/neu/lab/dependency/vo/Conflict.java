@@ -19,6 +19,7 @@ public class Conflict {
     private Set<String> versions;
     private List<String> moduleNames;
     private Map<String, List<Pom>> versionToModule;
+    private boolean isLocalVersion;
 
 
     public Conflict(String groupId, String artifactId) {
@@ -65,6 +66,14 @@ public class Conflict {
 
     public Set<String> getVersions() {
         return versions;
+    }
+
+    public boolean isLocalVersion() {
+        return isLocalVersion;
+    }
+
+    public void setLocalVersion(boolean localVersion) {
+        isLocalVersion = localVersion;
     }
 
     public List<Pom> getModules() {
@@ -137,6 +146,7 @@ public class Conflict {
                     max = versionToModule.get(version).size();
                 }
             }
+            setLocalVersion(true);
         } else {
             List<String> testVersions = MavenCrawler.getVersionList(groupId + ":" + artifactId);
             int min = versions.size();
@@ -162,6 +172,7 @@ public class Conflict {
                     break;
                 }
             }
+            setLocalVersion(false);
         }
         return safeVersion;
     }
