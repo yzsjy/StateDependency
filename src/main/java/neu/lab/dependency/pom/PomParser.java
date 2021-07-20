@@ -10,6 +10,7 @@ import guru.nidi.graphviz.model.Graph;
 import guru.nidi.graphviz.model.Link;
 import guru.nidi.graphviz.model.Node;
 import neu.lab.dependency.container.Poms;
+import neu.lab.dependency.util.Conf;
 import neu.lab.dependency.vo.DepInfo;
 import neu.lab.dependency.vo.Pom;
 
@@ -93,7 +94,7 @@ public class PomParser {
 
         Graph g = graph("example").directed().graphAttr().with(Rank.dir(LEFT_TO_RIGHT)).with(nodeList);
         try {
-            Graphviz.fromGraph(g).render(Format.PNG).toFile(new File("example" + File.separator + projName + File.separator + "inheritance.png"));
+            Graphviz.fromGraph(g).render(Format.PNG).toFile(new File(Conf.Dir + "graph" + File.separator + projName + File.separator + "inheritance.png"));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -122,7 +123,7 @@ public class PomParser {
 
         Graph g = graph("example").directed().graphAttr().with(Rank.dir(LEFT_TO_RIGHT)).with(nodeList);
         try {
-            Graphviz.fromGraph(g).render(Format.PNG).toFile(new File("example" + File.separator + projName + File.separator + classify + ".png"));
+            Graphviz.fromGraph(g).render(Format.PNG).toFile(new File(Conf.Dir + "graph" + File.separator + projName + File.separator + classify + ".png"));
         } catch (IOException e) {
             e.printStackTrace();
         }

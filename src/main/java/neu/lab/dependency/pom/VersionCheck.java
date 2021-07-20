@@ -28,6 +28,9 @@ public class VersionCheck {
 
     public void init() {
         Conflicts.init(projPath);
+        if (Conflicts.i().getConflicts().size() == 0) {
+            return;
+        }
         generateGraph();
         printRisk();
         writeToExcelFile();
@@ -52,10 +55,13 @@ public class VersionCheck {
                     stringBuffer.append(pom.getSig() + "\n");
                 }
             }
-            stringBuffer.append(conflict.getSig() + " safe version : " + conflict.getSafeVersion() + "\n");
+//            stringBuffer.append(conflict.getSig() + " safe version : " + conflict.getSafeVersion() + "\n");
         }
         stringBuffer.append("\n\n");
         try {
+            if (!new File(Conf.Dir).exists()) {
+                new File(Conf.Dir).mkdirs();
+            }
             String outFile = Conf.Dir + "Conflicts.txt";
             File file = new File(outFile);
             if (!file.exists()) {
@@ -76,7 +82,8 @@ public class VersionCheck {
         int conflictNum = Conflicts.i().getConflicts().size();
         int moduleNum = Poms.i().getModules().size();
         int inheritDepth = getInheritDepth();
-        ExcelDataVO data = new ExcelDataVO(projName, depNum, moduleNum, conflictNum, inheritDepth);
+        int conflictDepth = getConflictDepth();
+        ExcelDataVO data = new ExcelDataVO(projName, depNum, moduleNum, conflictNum, inheritDepth, conflictDepth);
         String filePath = Conf.Dir + "Data.xlsx";
         File file = new File(filePath);
         if (file.exists()) {
@@ -127,5 +134,25 @@ public class VersionCheck {
         return depth;
     }
 
+    public int getConflictDepth() {
+        int depth = 0;
+        Set<String> visited = new HashSet<>();
+        for (Conflict conflict : Conflicts.i().getConflicts()) {
+            for (Pom pom : conflict.getModules()) {
+                if (visited.contains(pom.getSig())) {
+                    continue;
+                }
+                int temp = 1;
+                Pom parent = pom.getParent();
+                while (parent != null) {
+                    temp++;
+                    parent = parent.getParent();
+                }
+                depth = Math.max(depth, temp);
+                visited.add(pom.getSig());
+            }
+        }
+        return depth;
+    }
 
 }

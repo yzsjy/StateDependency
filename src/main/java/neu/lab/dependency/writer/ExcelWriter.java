@@ -24,6 +24,7 @@ public class ExcelWriter {
         CELL_HEADS.add("Dependency Number");
         CELL_HEADS.add("Inconsist Dependency Number");
         CELL_HEADS.add("Inherit Depth");
+        CELL_HEADS.add("Conflict Depth");
     }
 
     public static Workbook exportData(ExcelDataVO data) {
@@ -108,5 +109,7 @@ public class ExcelWriter {
         cell.setCellValue(data.getConflictNum());
         cell = row.createCell(cellNum++);
         cell.setCellValue(data.getInheritDepth());
+        cell = row.createCell(cellNum++);
+        cell.setCellValue(data.getConflictDepth());
     }
 }

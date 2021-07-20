@@ -10,13 +10,15 @@ public class ExcelDataVO {
     private int depNum;
     private int conflictNum;
     private int inheritDepth;
+    private int conflictDepth;
 
-    public ExcelDataVO(String projName, int moduleNum, int depNum, int conflictNum, int inheritDepth) {
+    public ExcelDataVO(String projName, int moduleNum, int depNum, int conflictNum, int inheritDepth, int conflictDepth) {
         this.projName = projName;
         this.moduleNum = moduleNum;
         this.depNum = depNum;
         this.conflictNum = conflictNum;
         this.inheritDepth = inheritDepth;
+        this.conflictDepth = conflictDepth;
     }
 
     public String getProjName() {
@@ -57,6 +59,14 @@ public class ExcelDataVO {
 
     public void setInheritDepth(int inheritDepth) {
         this.inheritDepth = inheritDepth;
+    }
+
+    public int getConflictDepth() {
+        return conflictDepth;
+    }
+
+    public void setConflictDepth(int conflictDepth) {
+        this.conflictDepth = conflictDepth;
     }
 
     @Override
