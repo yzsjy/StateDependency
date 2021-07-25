@@ -16,29 +16,34 @@ import java.util.Set;
  */
 public class Test {
     public static void main(String[] args) {
-        String projPath = "D:\\githubProject\\obevo\\";
-        Poms.init(projPath);
-        for (Pom pom : Poms.i().getPoms()) {
-
-            System.out.println(pom.getSig());
-        }
-//        Conflicts.init(projPath);
-//        String[] splits = projPath.split("\\\\");
-//        Conflicts.i().generateGraphs(splits[splits.length - 1]);
-//        List<Conflict> conflicts = Conflicts.i().getRealConflicts();
-//        for (Conflict conflict : conflicts) {
-//            System.out.println(conflict.getSig());
-//            Map<String, List<Pom>> versionToModule = conflict.getVersionToModule();
-//            for (Map.Entry<String, List<Pom>> entry : versionToModule.entrySet()) {
-//                System.out.println("Version: " + entry.getKey());
-//                List<Pom> poms = entry.getValue();
-//                for (Pom pom : poms) {
-//                    System.out.println(pom.getSig());
-//                }
+        String projPath = "E:\\Project\\dolphinscheduler-dev\\";
+//        Poms.init(projPath);
+//        for (Pom pom : Poms.i().getPoms()) {
+//            if (pom.getParent() != null) {
+//                System.out.println(pom.getSig() + "    " + pom.getParent().getSig());
+//            } else {
+//                System.out.println(pom.getSig());
 //            }
-//            System.out.println(conflict.getSig() + " safe version : " + conflict.getSafeVersion());
-//            System.out.println();
 //        }
+
+        Conflicts.init(projPath);
+        String[] splits = projPath.split("\\\\");
+        Conflicts.i().generateGraphs(splits[splits.length - 1]);
+        List<Conflict> conflicts = Conflicts.i().getRealConflicts();
+        for (Conflict conflict : conflicts) {
+            System.out.println(conflict.getSig());
+            Map<String, List<Pom>> versionToModule = conflict.getVersionToModule();
+            for (Map.Entry<String, List<Pom>> entry : versionToModule.entrySet()) {
+                System.out.println("Version: " + entry.getKey());
+                List<Pom> poms = entry.getValue();
+                for (Pom pom : poms) {
+                    System.out.println(pom.getSig());
+                }
+            }
+            System.out.println(conflict.getSig() + " safe version : " + conflict.getSafeVersion());
+            System.out.println();
+        }
+
 //        getCallGraph();
 
     }

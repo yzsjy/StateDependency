@@ -74,7 +74,7 @@ public class ModuleParser {
                 String newVersion = parseProperties(version, pom);
                 propertiesPom = parseVersion(version, pom);
                 version = newVersion.split(" ")[0];
-//                System.out.println(newVersion);
+                System.out.println(newVersion);
                 propertiesName = newVersion.split(" ")[1];
                 isProperties = true;
             }

@@ -45,7 +45,6 @@ public class Poms {
             Model model = PomFileIO.i().parsePomFileToModel(projPath + path);
             if (model != null) {
                 String artifactId = model.getArtifactId();
-                System.out.println(artifactId);
                 if (artifactId.contains("${")) {
                     artifactId = parseProperties(artifactId, model);
                 }
@@ -73,7 +72,6 @@ public class Poms {
     }
 
     public void parsePom(Model model, Pom pom) {
-        System.out.println(pom.getFilePath());
         String artifactId = pom.getArtifactId();
         String groupId = model.getGroupId();
         String version = model.getVersion();
@@ -150,7 +148,6 @@ public class Poms {
                     }
                 }
             } else {
-//                System.out.println(pom.getArtifactId() + " has no parent");
                 pom.setParent(null);
             }
         }

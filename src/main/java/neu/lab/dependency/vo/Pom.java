@@ -5,6 +5,7 @@ import org.apache.maven.model.Model;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * @author SUNJUNYAN
@@ -186,13 +187,6 @@ public class Pom {
         this.inheritDepManagements = inheritDepManagements;
     }
 
-    public boolean equals(Pom pom) {
-        if (pom.getGroupId().equals(groupId) && pom.getArtifactId().equals(artifactId) && pom.getVersion().equals(version)) {
-            return true;
-        }
-        return false;
-    }
-
     public boolean isSelf(String groupId, String artifactId, String version) {
         if (this.groupId.equals(groupId) && this.artifactId.equals(artifactId) && this.version.equals(version)) {
             return true;
@@ -218,5 +212,22 @@ public class Pom {
                 ", version='" + version + '\'' +
                 ", packaging='" + packaging + '\'' +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Pom pom = (Pom) o;
+        return artifactId.equals(pom.artifactId) && filePath.equals(pom.filePath);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(artifactId, filePath);
     }
 }

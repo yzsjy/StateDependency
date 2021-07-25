@@ -29,15 +29,20 @@ public class PomCoordinate {
 		PROJECT_PATH = projectPath;
 	}
 
+	public static void main(String[] args) {
+		PomCoordinate pomCoordinate = new PomCoordinate("D:\\githubProject\\obevo\\");
+		Map<String, String> res = pomCoordinate.parsePomForOneProj();
+		for (Map.Entry<String, String> entry : res.entrySet()) {
+			System.out.println(entry.getKey() + "    " + entry.getValue());
+		}
+	}
+
 	/**
 	 * 获取一个依赖的groupId，artifactId，version和packaging
-	 * @param outputPath
-	 * @param projectId
-	 * @param projectPath
 	 */
-	public Map<String, String> parsePomForOneProj(String outputPath, int projectId, String projectPath) {
+	public Map<String, String> parsePomForOneProj() {
 		Map<String, String> pomMap = new HashMap<>();
-		String[] pomFiles = FileUtil.i().getAllPomFiles(projectPath);
+		String[] pomFiles = FileUtil.i().getAllPomFiles(PROJECT_PATH);
 		System.out.println("pom file size : " + pomFiles.length);
 		if (pomFiles.length > 0) {
 			for (String pomFile : pomFiles) {
@@ -45,8 +50,7 @@ public class PomCoordinate {
 					continue;
 				}
 				if (pomFile.endsWith("pom.xml")) {
-					System.out.println(pomFile);
-					Model model = PomFileIO.i().parsePomFileToModel(projectPath + File.separator + pomFile);
+					Model model = PomFileIO.i().parsePomFileToModel(PROJECT_PATH + pomFile);
 					if (model != null) {
 						String groupId = model.getGroupId();
 						String artifactId = model.getArtifactId();
@@ -64,19 +68,19 @@ public class PomCoordinate {
 							}
 						}
 						if (groupId != null && groupId.contains("${")) {
-							groupId = parseProperty(groupId, model, projectPath, pomFile);
+							groupId = parseProperty(groupId, model, pomFile);
 						}
 						if (artifactId != null && artifactId.contains("${")) {
-							artifactId = parseProperty(artifactId, model, projectPath, pomFile);
+							artifactId = parseProperty(artifactId, model, pomFile);
 						}
 						if (version != null && version.contains("${")) {
-							version = parseProperty(version, model, projectPath, pomFile);
+							version = parseProperty(version, model, pomFile);
 						}
 						if (packaging != null && packaging.contains("${")) {
-							packaging = parseProperty(packaging, model, projectPath, pomFile);
+							packaging = parseProperty(packaging, model, pomFile);
 						}
 						String key = groupId + ":" + artifactId + ":" + packaging + ":" + version;
-						pomMap.put(key, pomFile);
+						pomMap.put(key, PROJECT_PATH + pomFile);
 					}
 				}
 			}
@@ -84,7 +88,7 @@ public class PomCoordinate {
 		return pomMap;
 	}
 	
-	public String parseProperty(String name, Model model, String projectPath, String path) {
+	public String parseProperty(String name, Model model, String path) {
 		Pattern el = Pattern.compile("\\$\\{(.*?)\\}");
 		boolean matched = true;
 		while (name != null && matched) {
@@ -177,7 +181,7 @@ public class PomCoordinate {
 						name = newName;
 					}
 				} else if (model.getParent() != null) {
-					String newName = parseFromParent(model, name, m, projectPath, path);
+					String newName = parseFromParent(model, name, m, path);
 					if (name.equals(newName)) {
 						matched = false;
 					} else {
@@ -191,8 +195,8 @@ public class PomCoordinate {
 		}
 		return name;
 	}
-	
-	public String parseFromParent(Model model, String name, Matcher m, String projectPath, String path) {
+
+	public String parseFromParent(Model model, String name, Matcher m, String path) {
 		// 处理parent
 		String parentGroupId = model.getParent().getGroupId();
 		String parentArtifactId = model.getParent().getArtifactId();
@@ -204,7 +208,7 @@ public class PomCoordinate {
 		} else {
 			if (!(parentPath.endsWith("pom.xml") || parentPath.endsWith(".xml"))) {
 				if (!parentPath.endsWith(File.separator)) {
-					parentPath += "/";
+					parentPath += File.separator;
 				}
 				parentPath += "pom.xml";
 			}
@@ -228,10 +232,10 @@ public class PomCoordinate {
 				if (prefix.equals("")) {
 					parentWholePath = parentPath;
 				}
-				System.out.println("parent: " + projectPath + File.separator + parentWholePath);
-				if (new File(projectPath + File.separator + parentWholePath).exists() && isParent(
-						projectPath + File.separator + parentWholePath, parentGroupId, parentArtifactId, parentVersion)) {
-					Model tempModel = PomFileIO.i().parsePomFileToModel(projectPath + File.separator + parentWholePath);
+				System.out.println("parent : " + new File(PROJECT_PATH + parentWholePath).getPath());
+				if (new File(PROJECT_PATH + parentWholePath).exists() && isParent(
+						PROJECT_PATH + parentWholePath, parentGroupId, parentArtifactId, parentVersion)) {
+					Model tempModel = PomFileIO.i().parsePomFileToModel(PROJECT_PATH + parentWholePath);
 					if (tempModel != null) {
 						if (tempModel.getProperties() != null
 								&& tempModel.getProperties().getProperty(m.group(1)) != null) {
@@ -239,7 +243,7 @@ public class PomCoordinate {
 							return newName;
 						} else {
 							if (tempModel.getParent() != null) {
-								return parseFromParent(tempModel, name, m, projectPath, parentWholePath);
+								return parseFromParent(tempModel, name, m, parentWholePath);
 							}
 						}
 					}
