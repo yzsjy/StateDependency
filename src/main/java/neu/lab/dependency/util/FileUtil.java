@@ -37,4 +37,8 @@ public class FileUtil {
         return scanner.getIncludedFiles();
     }
 
+    public String normalizePath(String path) {
+        return new File(path).toPath().normalize().toString();
+    }
+
 }

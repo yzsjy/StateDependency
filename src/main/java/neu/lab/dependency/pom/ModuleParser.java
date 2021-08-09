@@ -72,10 +72,13 @@ public class ModuleParser {
             }
             if (version != null && version.contains("${")) {
                 String newVersion = parseProperties(version, pom);
+                String[] versionInfos = newVersion.split(" ");
+                if (versionInfos.length < 2) {
+                    continue;
+                }
                 propertiesPom = parseVersion(version, pom);
-                version = newVersion.split(" ")[0];
-                System.out.println(newVersion);
-                propertiesName = newVersion.split(" ")[1];
+                version = versionInfos[0];
+                propertiesName = versionInfos[1];
                 isProperties = true;
             }
             if (version == null) {

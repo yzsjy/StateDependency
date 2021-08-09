@@ -18,6 +18,7 @@ public class Pom {
     private Model model;
     private Pom parent;
     private String filePath;
+    private String modulePath;
     private Map<String, String> properties;
     private List<String> dependencies;
     private List<String> dependencyManagement;
@@ -33,6 +34,14 @@ public class Pom {
     public Pom(String artifactId, String filePath, Model model) {
         this.artifactId = artifactId;
         this.filePath = filePath;
+        this.model = model;
+        init();
+    }
+
+    public Pom(String artifactId, String filePath, String modulePath, Model model) {
+        this.artifactId = artifactId;
+        this.filePath = filePath;
+        this.modulePath = modulePath;
         this.model = model;
         init();
     }
@@ -185,6 +194,14 @@ public class Pom {
 
     public void setInheritDepManagements(List<DepInfo> inheritDepManagements) {
         this.inheritDepManagements = inheritDepManagements;
+    }
+
+    public String getModulePath() {
+        return modulePath;
+    }
+
+    public void setModulePath(String modulePath) {
+        this.modulePath = modulePath;
     }
 
     public boolean isSelf(String groupId, String artifactId, String version) {

@@ -129,6 +129,33 @@ public class PomParser {
         }
     }
 
+    public void generateGraph(int[][] map, Map<String, Integer> indexs, String classify, String projName) {
+        int size = indexs.size();
+        Node[] nodes = new Node[size];
+        for (Map.Entry<String, Integer> entry : indexs.entrySet()) {
+            nodes[entry.getValue()] = node(entry.getKey());
+        }
+        List<Node> nodeList = new ArrayList<>();
+        for (int i = 0; i < map.length; i++) {
+            List<Link> links = new ArrayList<>();
+            for (int j = 0; j < map[i].length; j++) {
+                if (map[i][j] == 1) {
+                    links.add(to(nodes[j]));
+                } else if (map[i][j] == 2) {
+                    links.add(to(nodes[j]).with(Color.RED));
+                }
+            }
+            nodeList.add(nodes[i].link(links));
+        }
+
+        Graph g = graph("example").directed().graphAttr().with(Rank.dir(LEFT_TO_RIGHT)).with(nodeList);
+        try {
+            Graphviz.fromGraph(g).render(Format.PNG).toFile(new File(Conf.Dir + "graph" + File.separator + projName + File.separator + classify + ".png"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     public static void main(String[] args) {
         String projPath = "D:\\githubProject\\blueocean-plugin\\";
         PomParser pomParser = new PomParser(projPath);

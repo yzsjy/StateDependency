@@ -50,7 +50,8 @@ public class PomCoordinate {
 					continue;
 				}
 				if (pomFile.endsWith("pom.xml")) {
-					Model model = PomFileIO.i().parsePomFileToModel(PROJECT_PATH + pomFile);
+					String modulePath = PROJECT_PATH + pomFile;
+					Model model = PomFileIO.i().parsePomFileToModel(modulePath);
 					if (model != null) {
 						String groupId = model.getGroupId();
 						String artifactId = model.getArtifactId();
@@ -80,7 +81,7 @@ public class PomCoordinate {
 							packaging = parseProperty(packaging, model, pomFile);
 						}
 						String key = groupId + ":" + artifactId + ":" + packaging + ":" + version;
-						pomMap.put(key, PROJECT_PATH + pomFile);
+						pomMap.put(key, modulePath);
 					}
 				}
 			}
@@ -232,10 +233,10 @@ public class PomCoordinate {
 				if (prefix.equals("")) {
 					parentWholePath = parentPath;
 				}
-				System.out.println("parent : " + new File(PROJECT_PATH + parentWholePath).getPath());
-				if (new File(PROJECT_PATH + parentWholePath).exists() && isParent(
-						PROJECT_PATH + parentWholePath, parentGroupId, parentArtifactId, parentVersion)) {
-					Model tempModel = PomFileIO.i().parsePomFileToModel(PROJECT_PATH + parentWholePath);
+				String normalizePath = FileUtil.i().normalizePath(PROJECT_PATH + parentWholePath);
+				if (new File(normalizePath).exists() && isParent(
+						normalizePath, parentGroupId, parentArtifactId, parentVersion)) {
+					Model tempModel = PomFileIO.i().parsePomFileToModel(normalizePath);
 					if (tempModel != null) {
 						if (tempModel.getProperties() != null
 								&& tempModel.getProperties().getProperty(m.group(1)) != null) {
