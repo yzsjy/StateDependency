@@ -20,8 +20,8 @@ public class ExcelWriter {
     static {
         CELL_HEADS = new ArrayList<>();
         CELL_HEADS.add("Project");
-        CELL_HEADS.add("Dependency Number");
         CELL_HEADS.add("Module Number");
+        CELL_HEADS.add("Dependency Number");
         CELL_HEADS.add("Inconsist Dependency Number");
         CELL_HEADS.add("Inherit Depth");
         CELL_HEADS.add("Conflict Depth");

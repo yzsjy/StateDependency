@@ -11,6 +11,7 @@ public class ModuleReduce {
     private Map<String, Integer> indexs;
     private Map<Integer, String> revertIndexs;
     private Set<Integer> visit;
+    private List<List<Integer>> reduceEdge;
 
     private ModuleReduce() {
 
@@ -28,6 +29,7 @@ public class ModuleReduce {
         indexs = ModuleRelation.i().getIndexs();
         revertIndexs = ModuleRelation.i().revertIndexs();
         visit = new HashSet<>();
+        reduceEdge = new ArrayList<>();
         temp = copyArray(modules);
     }
 
@@ -60,9 +62,12 @@ public class ModuleReduce {
         for (int directNode : directNodes) {
             if (indirectNodes.contains(directNode)) {
                 temp[index][directNode] = 2;
+                List<Integer> pair = new ArrayList<>();
+                pair.add(index);
+                pair.add(directNode);
+                reduceEdge.add(pair);
             }
         }
-
     }
 
     public List<List<Integer>> getReachNodes(int[][] temp, int index) {
@@ -125,4 +130,7 @@ public class ModuleReduce {
         pomParser.generateGraph(temp, indexs, "newDependencies", projName);
     }
 
+    public List<List<Integer>> getReduceEdge() {
+        return reduceEdge;
+    }
 }

@@ -7,6 +7,7 @@ import neu.lab.dependency.vo.Conflict;
 import neu.lab.dependency.vo.ExcelDataVO;
 import neu.lab.dependency.vo.Pom;
 import neu.lab.dependency.writer.ExcelWriter;
+import neu.lab.dependency.writer.ReduceExcelWriter;
 import org.apache.poi.ss.usermodel.Workbook;
 
 import java.io.*;
@@ -28,6 +29,7 @@ public class VersionCheck {
 
     public void init() {
         Conflicts.init(projPath);
+        reduceModule();
         if (Conflicts.i().getConflicts().size() == 0) {
             return;
         }
@@ -36,13 +38,22 @@ public class VersionCheck {
         writeToExcelFile();
     }
 
+    public void reduceModule() {
+        String[] splits = projPath.split("/");
+        ModuleReduce.i().reduceDep();
+        ModuleReduce.i().generateGraph(splits[splits.length - 1]);
+        writeReduceToExcelFile();
+    }
+
 
     public void generateGraph() {
-        String[] splits = projPath.split("\\\\");
+        String[] splits = projPath.split("/");
         Conflicts.i().generateGraphs(splits[splits.length - 1]);
     }
 
     public void printRisk() {
+        String[] splits = projPath.split("/");
+        String projName = splits[splits.length - 1];
         StringBuffer stringBuffer = new StringBuffer();
         stringBuffer.append(projPath + "\n\n");
         for (Conflict conflict : Conflicts.i().getConflicts()) {
@@ -54,15 +65,17 @@ public class VersionCheck {
                 for (Pom pom : poms) {
                     stringBuffer.append(pom.getSig() + "\n");
                 }
+                stringBuffer.append("\n");
             }
 //            stringBuffer.append(conflict.getSig() + " safe version : " + conflict.getSafeVersion() + "\n");
+            stringBuffer.append("\n\n");
         }
         stringBuffer.append("\n\n");
         try {
             if (!new File(Conf.Dir).exists()) {
                 new File(Conf.Dir).mkdirs();
             }
-            String outFile = Conf.Dir + "Conflicts.txt";
+            String outFile = Conf.Dir + "conflict/" + projName + ".txt";
             File file = new File(outFile);
             if (!file.exists()) {
                 file.createNewFile();
@@ -76,14 +89,14 @@ public class VersionCheck {
     }
 
     public void writeToExcelFile() {
-        String[] splits = projPath.split("\\\\");
+        String[] splits = projPath.split("/");
         String projName = splits[splits.length - 1];
         int depNum = getDepNum();
         int conflictNum = Conflicts.i().getConflicts().size();
         int moduleNum = Poms.i().getModules().size();
         int inheritDepth = getInheritDepth();
         int conflictDepth = getConflictDepth();
-        ExcelDataVO data = new ExcelDataVO(projName, depNum, moduleNum, conflictNum, inheritDepth, conflictDepth);
+        ExcelDataVO data = new ExcelDataVO(projName, moduleNum, depNum, conflictNum, inheritDepth, conflictDepth);
         String filePath = Conf.Dir + "Data.xlsx";
         File file = new File(filePath);
         if (file.exists()) {
@@ -103,6 +116,40 @@ public class VersionCheck {
             try {
                 file.createNewFile();
                 Workbook workbook = ExcelWriter.exportData(data);
+                FileOutputStream fileOut = new FileOutputStream(filePath);
+                workbook.write(fileOut);
+                fileOut.flush();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public void writeReduceToExcelFile() {
+        String[] splits = projPath.split("/");
+        String projName = splits[splits.length - 1];
+        int moduleNum = Poms.i().getModules().size();
+        int reduceNum = ModuleReduce.i().getReduceEdge().size();
+        ExcelDataVO data = new ExcelDataVO(projName, moduleNum, reduceNum);
+        String filePath = Conf.Dir + "ReduceData.xlsx";
+        File file = new File(filePath);
+        if (file.exists()) {
+            try {
+                FileInputStream inputStream = new FileInputStream(file);
+                Workbook workbook = ReduceExcelWriter.getWorkBook(inputStream);
+                FileOutputStream outputStream = new FileOutputStream(file);
+                ReduceExcelWriter.insertData(data, workbook);
+                workbook.write(outputStream);
+                outputStream.flush();
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else {
+            try {
+                file.createNewFile();
+                Workbook workbook = ReduceExcelWriter.exportData(data);
                 FileOutputStream fileOut = new FileOutputStream(filePath);
                 workbook.write(fileOut);
                 fileOut.flush();

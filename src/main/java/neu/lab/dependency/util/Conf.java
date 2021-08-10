@@ -13,5 +13,5 @@ public class Conf {
     public static boolean append;
     public static List<String> visited = new ArrayList<>();
 //    public static String Dir = "D:\\sunjunyan\\output\\module\\";
-    public static String Dir = "D:\\IdeaProjects\\StateDependency\\example\\";
+    public static String Dir = "/home/b406/sunjunyan/autoExecLinux/output/module/";
 }
