@@ -2,10 +2,12 @@ package neu.lab.dependency;
 
 import neu.lab.dependency.container.Conflicts;
 import neu.lab.dependency.container.Poms;
+import neu.lab.dependency.pom.ModuleReduce;
 import neu.lab.dependency.soot.SootRiskCg;
 import neu.lab.dependency.vo.Conflict;
 import neu.lab.dependency.vo.Pom;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -16,7 +18,7 @@ import java.util.Set;
  */
 public class Test {
     public static void main(String[] args) {
-        String projPath = "E:\\Project\\dolphinscheduler-dev\\";
+        String projPath = "D:\\githubProject\\blueocean-plugin\\";
 //        Poms.init(projPath);
 //        for (Pom pom : Poms.i().getPoms()) {
 //            if (pom.getParent() != null) {
@@ -40,12 +42,13 @@ public class Test {
                     System.out.println(pom.getSig());
                 }
             }
-            System.out.println(conflict.getSig() + " safe version : " + conflict.getSafeVersion());
+//            System.out.println(conflict.getSig() + " safe version : " + conflict.getSafeVersion());
             System.out.println();
         }
+        ModuleReduce.i().reduceDep();
+        ModuleReduce.i().generateGraph(splits[splits.length - 1]);
 
 //        getCallGraph();
-
     }
 
     public static void getCallGraph() {
