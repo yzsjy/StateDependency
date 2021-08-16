@@ -102,18 +102,16 @@ public class Poms {
         pom.setArtifactId(artifactId);
         pom.setVersion(version);
         pom.setPackaging(packaging);
-//        if (parent != null) {
-//            String parentArtifactId = parent.getArtifactId();
-//            if (parentArtifactId.contains("${")) {
-//                parentArtifactId = parseProperties(parentArtifactId, model);
-//            }
-//            if (info.containsKey(parentArtifactId)) {
-//                Pom parentPom = info.get(parentArtifactId);
-//                if (isParent(model, parentPom)) {
-//                    pom.setParent(parentPom);
-//                }
-//            }
-//        }
+        if (parent != null) {
+            String parentArtifactId = parent.getArtifactId();
+            if (parentArtifactId.contains("${")) {
+                parentArtifactId = parseProperties(parentArtifactId, model);
+            }
+            if (info.containsKey(parentArtifactId)) {
+                Pom parentPom = info.get(parentArtifactId);
+                pom.setParent(parentPom);
+            }
+        }
         visited.add(artifactId);
     }
 
@@ -341,6 +339,16 @@ public class Poms {
         Pom target = null;
         for (Pom pom : container) {
             if (pom.getFilePath().equals(path)) {
+                target = pom;
+            }
+        }
+        return target;
+    }
+
+    public Pom getPom(String sig) {
+        Pom target = null;
+        for (Pom pom : container) {
+            if (pom.getSig().equals(sig)) {
                 target = pom;
             }
         }

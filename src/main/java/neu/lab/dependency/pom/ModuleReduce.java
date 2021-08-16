@@ -1,5 +1,10 @@
 package neu.lab.dependency.pom;
 
+import neu.lab.dependency.container.Poms;
+import neu.lab.dependency.soot.SootRiskCg;
+import neu.lab.dependency.vo.Pom;
+
+import java.io.File;
 import java.util.*;
 
 public class ModuleReduce {
@@ -128,6 +133,34 @@ public class ModuleReduce {
     public void generateGraph(String projName) {
         PomParser pomParser = new PomParser();
         pomParser.generateGraph(temp, indexs, "newDependencies", projName);
+    }
+
+    public void canReduce() {
+        List<String> canReduce = new ArrayList<>();
+        List<String> notReduce = new ArrayList<>();
+        for (List<Integer> list : reduceEdge) {
+            int start = list.get(0);
+            int end = list.get(1);
+            Pom startPom = Poms.i().getPom(revertIndexs.get(start));
+            Pom endPom = Poms.i().getPom(revertIndexs.get(end));
+            String startPath = startPom.getFilePath();
+            String endPath = endPom.getFilePath();
+            startPath = startPath.substring(0, startPath.length() - 7) + "target" + File.separator + "classes";
+            endPath = endPath.substring(0, endPath.length() - 7) + "target" + File.separator + "classes";
+            Set<String> mthds = SootRiskCg.i().cmpCg(startPath, endPath);
+            if (mthds.isEmpty()) {
+                canReduce.add(revertIndexs.get(start) + " to " + revertIndexs.get(end) + " can reduce");
+            } else {
+                notReduce.add(revertIndexs.get(start) + " to " + revertIndexs.get(end) + " can not reduce");
+            }
+        }
+        for (String can : canReduce) {
+            System.out.println(can);
+        }
+
+        for (String not : notReduce) {
+            System.out.println(not);
+        }
     }
 
     public List<List<Integer>> getReduceEdge() {

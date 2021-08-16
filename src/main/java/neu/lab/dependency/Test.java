@@ -5,6 +5,7 @@ import neu.lab.dependency.container.Poms;
 import neu.lab.dependency.pom.ModuleReduce;
 import neu.lab.dependency.soot.SootRiskCg;
 import neu.lab.dependency.vo.Conflict;
+import neu.lab.dependency.vo.DepInfo;
 import neu.lab.dependency.vo.Pom;
 
 import java.io.File;
@@ -18,7 +19,7 @@ import java.util.Set;
  */
 public class Test {
     public static void main(String[] args) {
-        String projPath = "D:\\githubProject\\blueocean-plugin\\";
+        String projPath = "D:\\githubProjects\\newts\\";
 //        Poms.init(projPath);
 //        for (Pom pom : Poms.i().getPoms()) {
 //            if (pom.getParent() != null) {
@@ -47,14 +48,24 @@ public class Test {
         }
         ModuleReduce.i().reduceDep();
         ModuleReduce.i().generateGraph(splits[splits.length - 1]);
+        ModuleReduce.i().canReduce();
+
+
+//        for (Pom pom : Poms.i().getPoms()) {
+//            System.out.println(pom.getSig());
+//            for (DepInfo depInfo : pom.getOwnDependencies()) {
+//                System.out.println(depInfo.getSig());
+//            }
+//            System.out.println();
+//        }
 
 //        getCallGraph();
     }
 
     public static void getCallGraph() {
         List<String> paths = new ArrayList<>();
-        String jarPath = "C:\\Users\\SUNJUNYAN\\.m2\\repository\\org\\apache\\maven\\shared\\maven-dependency-tree\\2.1\\maven-dependency-tree-2.1.jar";
-        String hostPath = "D:\\IdeaProjects\\Decca\\target\\classes";
+        String jarPath = "D:\\Maven\\Repositories\\neu\\lab\\soot\\4.1.0\\soot-4.1.0.jar";
+        String hostPath = "D:\\githubProjects\\Decca\\target\\classes";
         Set<String> mthds = SootRiskCg.i().cmpCg(jarPath, hostPath);
         for (String mthd : mthds) {
             System.out.println(mthd);
