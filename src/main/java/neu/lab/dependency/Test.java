@@ -64,9 +64,9 @@ public class Test {
 
     public static void getCallGraph() {
         List<String> paths = new ArrayList<>();
-        String jarPath = "D:\\Maven\\Repositories\\neu\\lab\\soot\\4.1.0\\soot-4.1.0.jar";
-        String hostPath = "D:\\githubProjects\\Decca\\target\\classes";
-        Set<String> mthds = SootRiskCg.i().cmpCg(jarPath, hostPath);
+        String jarPath = "D:\\githubProjects\\incubator-nemo\\runtime\\common\\target\\classes";
+        String hostPath = "D:\\githubProjects\\incubator-nemo\\runtime\\executor\\target\\classes";
+        Set<String> mthds = SootRiskCg.i().cmpCg(hostPath, jarPath);
         for (String mthd : mthds) {
             System.out.println(mthd);
         }

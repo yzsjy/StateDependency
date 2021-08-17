@@ -49,6 +49,7 @@ public class ModuleReduce {
         for (int i = 0; i < len; i++) {
             reduceDepModule(temp, i);
         }
+        canReduce();
     }
 
     public void reduceDepModule(int[][] temp, int index) {
@@ -136,8 +137,8 @@ public class ModuleReduce {
     }
 
     public void canReduce() {
-        List<String> canReduce = new ArrayList<>();
-        List<String> notReduce = new ArrayList<>();
+        List<List<Integer>> canReduce = new ArrayList<>();
+        List<List<Integer>> notReduce = new ArrayList<>();
         for (List<Integer> list : reduceEdge) {
             int start = list.get(0);
             int end = list.get(1);
@@ -149,17 +150,14 @@ public class ModuleReduce {
             endPath = endPath.substring(0, endPath.length() - 7) + "target" + File.separator + "classes";
             Set<String> mthds = SootRiskCg.i().cmpCg(startPath, endPath);
             if (mthds.isEmpty()) {
-                canReduce.add(revertIndexs.get(start) + " to " + revertIndexs.get(end) + " can reduce");
+                canReduce.add(list);
             } else {
-                notReduce.add(revertIndexs.get(start) + " to " + revertIndexs.get(end) + " can not reduce");
+                notReduce.add(list);
             }
         }
-        for (String can : canReduce) {
-            System.out.println(can);
-        }
 
-        for (String not : notReduce) {
-            System.out.println(not);
+        for (List<Integer> can : canReduce) {
+            temp[can.get(0)][can.get(1)] = 3;
         }
     }
 

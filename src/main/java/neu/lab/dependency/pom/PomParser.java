@@ -143,6 +143,8 @@ public class PomParser {
                     links.add(to(nodes[j]));
                 } else if (map[i][j] == 2) {
                     links.add(to(nodes[j]).with(Color.RED));
+                } else if (map[i][j] == 3) {
+                    links.add(to(nodes[j]).with(Color.BLUE).with(Style.DOTTED));
                 }
             }
             nodeList.add(nodes[i].link(links));

@@ -23,7 +23,7 @@ public class SootRiskCg {
         return instance;
     }
 
-    public Set<String> cmpCg(String jarPath, String hostPath) {
+    public Set<String> cmpCg(String hostPath, String jarPath) {
 //        MavenUtil.i().getLog().info("Use soot to compute reach methods");
         System.out.println("Use soot to compute reach methods");
         Set<String> reachMethods = new HashSet<>();
