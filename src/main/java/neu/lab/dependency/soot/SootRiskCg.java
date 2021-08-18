@@ -4,6 +4,7 @@ import neu.lab.dependency.vo.ArgsVO;
 import soot.PackManager;
 import soot.Transform;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -24,9 +25,12 @@ public class SootRiskCg {
     }
 
     public Set<String> cmpCg(String hostPath, String jarPath) {
+        Set<String> reachMethods = new HashSet<>();
+        if (!new File(hostPath).exists() || !new File(jarPath).exists()) {
+            return reachMethods;
+        }
 //        MavenUtil.i().getLog().info("Use soot to compute reach methods");
         System.out.println("Use soot to compute reach methods");
-        Set<String> reachMethods = new HashSet<>();
         List<String> jarPaths = new ArrayList<>();
         jarPaths.add(hostPath);
         jarPaths.add(hostPath);
