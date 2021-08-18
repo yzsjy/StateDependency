@@ -22,8 +22,8 @@ public class Conflicts {
 
     private static Conflicts instance;
 
-    public static void init(String projPath) {
-        instance = new Conflicts(projPath);
+    public static void init() {
+        instance = new Conflicts();
     }
 
     public static Conflicts i() {
@@ -34,14 +34,7 @@ public class Conflicts {
     }
 
     private Conflicts() {
-
-    }
-
-    private Conflicts(String projPath) {
         container = new ArrayList<>();
-        PomParser pomParser = new PomParser(projPath);
-        pomParser.parseProject();
-        ModuleRelation.i().generateGraph();
         modules = ModuleRelation.i().getModules();
         inheritance = ModuleRelation.i().getInheritance();
         indexs = ModuleRelation.i().getIndexs();
@@ -160,7 +153,6 @@ public class Conflicts {
     }
 
     public void generateGraphs(String projName) {
-        PomParser pomParser = new PomParser();
         Set<String> conflictModules = getConflictModules();
 //        System.out.println(indexs.size());
 //        for (Map.Entry<String, Integer> entry : indexs.entrySet()) {
@@ -170,8 +162,8 @@ public class Conflicts {
 //        for (Map.Entry<Integer, String> entry : revertIndexs.entrySet()) {
 //            System.out.println(entry.getKey() + "    " + entry.getValue());
 //        }
-        pomParser.generateGraph(modules, indexs, conflictModules, "dependencies", projName);
-        pomParser.generateGraph(inheritance, indexs, conflictModules, projName);
+        PomParser.i().generateGraph(modules, indexs, conflictModules, "dependencies", projName);
+        PomParser.i().generateGraph(inheritance, indexs, conflictModules, projName);
     }
 
     public List<Conflict> getRealConflicts() {

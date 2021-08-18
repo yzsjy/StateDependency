@@ -18,6 +18,8 @@ public class ReduceExcelWriter {
         CELL_HEADS.add("Project");
         CELL_HEADS.add("Module Number");
         CELL_HEADS.add("Reduce Number");
+        CELL_HEADS.add("Useful Number");
+        CELL_HEADS.add("Unuseful Number");
     }
 
     public static Workbook exportData(ExcelDataVO data) {
@@ -98,5 +100,9 @@ public class ReduceExcelWriter {
         cell.setCellValue(data.getModuleNum());
         cell = row.createCell(cellNum++);
         cell.setCellValue(data.getReduceNum());
+        cell = row.createCell(cellNum++);
+        cell.setCellValue(data.getUsefulNum());
+        cell = row.createCell(cellNum++);
+        cell.setCellValue(data.getUnusefulNum());
     }
 }

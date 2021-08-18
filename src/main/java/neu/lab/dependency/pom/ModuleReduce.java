@@ -17,6 +17,8 @@ public class ModuleReduce {
     private Map<Integer, String> revertIndexs;
     private Set<Integer> visit;
     private List<List<Integer>> reduceEdge;
+    private List<List<Integer>> canReduce;
+    private List<List<Integer>> notReduce;
 
     private ModuleReduce() {
 
@@ -35,6 +37,8 @@ public class ModuleReduce {
         revertIndexs = ModuleRelation.i().revertIndexs();
         visit = new HashSet<>();
         reduceEdge = new ArrayList<>();
+        canReduce = new ArrayList<>();
+        notReduce = new ArrayList<>();
         temp = copyArray(modules);
     }
 
@@ -132,13 +136,10 @@ public class ModuleReduce {
     }
 
     public void generateGraph(String projName) {
-        PomParser pomParser = new PomParser();
-        pomParser.generateGraph(temp, indexs, "newDependencies", projName);
+        PomParser.i().generateGraph(temp, indexs, "newDependencies", projName);
     }
 
     public void canReduce() {
-        List<List<Integer>> canReduce = new ArrayList<>();
-        List<List<Integer>> notReduce = new ArrayList<>();
         for (List<Integer> list : reduceEdge) {
             int start = list.get(0);
             int end = list.get(1);
@@ -163,5 +164,13 @@ public class ModuleReduce {
 
     public List<List<Integer>> getReduceEdge() {
         return reduceEdge;
+    }
+
+    public List<List<Integer>> getCanReduce() {
+        return canReduce;
+    }
+
+    public List<List<Integer>> getNotReduce() {
+        return notReduce;
     }
 }

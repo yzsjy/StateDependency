@@ -12,6 +12,8 @@ public class ExcelDataVO {
     private int inheritDepth;
     private int conflictDepth;
     private int reduceNum;
+    private int usefulNum;
+    private int unusefulNum;
 
     public ExcelDataVO(String projName, int moduleNum, int depNum, int conflictNum, int inheritDepth, int conflictDepth) {
         this.projName = projName;
@@ -22,10 +24,12 @@ public class ExcelDataVO {
         this.conflictDepth = conflictDepth;
     }
 
-    public ExcelDataVO(String projName, int moduleNum, int reduceNum) {
+    public ExcelDataVO(String projName, int moduleNum, int reduceNum, int usefulNum, int unusefulNum) {
         this.projName = projName;
         this.moduleNum = moduleNum;
         this.reduceNum = reduceNum;
+        this.usefulNum = usefulNum;
+        this.unusefulNum = unusefulNum;
     }
 
     public String getProjName() {
@@ -78,6 +82,14 @@ public class ExcelDataVO {
 
     public int getReduceNum() {
         return reduceNum;
+    }
+
+    public int getUsefulNum() {
+        return usefulNum;
+    }
+
+    public int getUnusefulNum() {
+        return unusefulNum;
     }
 
     public void setReduceNum(int reduceNum) {

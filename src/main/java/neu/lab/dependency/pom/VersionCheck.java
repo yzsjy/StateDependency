@@ -28,8 +28,15 @@ public class VersionCheck {
     }
 
     public void init() {
-        Conflicts.init(projPath);
+        PomParser.init(projPath);
+        ModuleRelation.i().generateGraph();
+
+//        detectConflict();
         reduceModule();
+    }
+
+    public void detectConflict() {
+        Conflicts.init();
         if (Conflicts.i().getConflicts().size() == 0) {
             return;
         }
@@ -130,7 +137,9 @@ public class VersionCheck {
         String projName = splits[splits.length - 1];
         int moduleNum = Poms.i().getModules().size();
         int reduceNum = ModuleReduce.i().getReduceEdge().size();
-        ExcelDataVO data = new ExcelDataVO(projName, moduleNum, reduceNum);
+        int usefulNum = ModuleReduce.i().getNotReduce().size();
+        int unusefulNum = ModuleReduce.i().getNotReduce().size();
+        ExcelDataVO data = new ExcelDataVO(projName, moduleNum, reduceNum, usefulNum, unusefulNum);
         String filePath = Conf.Dir + "ReduceData.xlsx";
         File file = new File(filePath);
         if (file.exists()) {

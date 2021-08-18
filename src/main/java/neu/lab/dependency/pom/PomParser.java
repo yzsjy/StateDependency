@@ -26,16 +26,30 @@ import static guru.nidi.graphviz.model.Factory.*;
  */
 public class PomParser {
 
+    private static PomParser instance;
+
     private String projPath;
     private Set<String> visited;
 
-    public PomParser() {
+    private PomParser() {
 
     }
 
-    public PomParser(String projPath) {
+    private PomParser(String projPath) {
         this.projPath = projPath;
         visited = new HashSet<>();
+        parseProject();
+    }
+
+    public static void init(String projPath) {
+            instance = new PomParser(projPath);
+    }
+
+    public static PomParser i() {
+        if (instance == null) {
+            instance = new PomParser();
+        }
+        return instance;
     }
 
     public void parseProject() {
