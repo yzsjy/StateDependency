@@ -33,9 +33,6 @@ public class ModuleParser {
     public void parseDependencies() {
         Set<Pom> poms = getPoms();
         for (Pom pom : poms) {
-            if (Conf.visited.contains(pom.getSig())) {
-                continue;
-            }
             parsePom(pom);
         }
     }
@@ -45,6 +42,12 @@ public class ModuleParser {
     }
 
     public void parsePom(Pom pom) {
+        if (Conf.visited.contains(pom.getSig())) {
+            return;
+        }
+        if (pom.getParent() != null) {
+            parsePom(pom.getParent());
+        }
         Model model = pom.getModel();
         getDependencyManagements(pom, model);
         getDependnecies(pom, model);
@@ -124,10 +127,10 @@ public class ModuleParser {
             if (version != null && version.contains("${")) {
                 String newVersion = parseProperties(version, pom);
                 propertiesPom = parseVersion(version, pom);
-                String[] newVersions = newVersion.split(" ");
-                if (newVersions.length == 1) {
-                    continue;
-                }
+//                String[] newVersions = newVersion.split(" ");
+//                if (newVersions.length == 1) {
+//                    continue;
+//                }
                 version = newVersion.split(" ")[0];
                 propertiesName = newVersion.split(" ")[1];
                 isProperties = true;
@@ -167,6 +170,35 @@ public class ModuleParser {
                 if (!name.equals(newName)) {
                     name = newName + " " + m.group(1);
                 }
+            } else if ("project.parent.version".equals(m.group(1)) || "parent.version".equals(m.group(1))) {
+                if (pom.getParent() != null && pom.getParent().getVersion() != null) {
+                    String newName = name.replace(m.group(0), pom.getParent().getVersion());
+                    if (!name.equals(newName)) {
+                        name = newName + " " + m.group(1);
+                    }
+                }
+            } else if ("project.parent.groupId".equals(m.group(1)) || "parent.groupId".equals(m.group(1))) {
+                if (pom.getParent() != null && pom.getParent().getGroupId() != null) {
+                    String newName = name.replace(m.group(0), pom.getParent().getGroupId());
+                    if (!name.equals(newName)) {
+                        name = newName + " " + m.group(1);
+                    }
+                }
+            } else if ("project.parent.artifactId".equals(m.group(1)) || "parent.artifactId".equals(m.group(1))) {
+                if (pom.getParent() != null && pom.getParent().getArtifactId() != null) {
+                    String newName = name.replace(m.group(0), pom.getParent().getArtifactId());
+                    if (!name.equals(newName)) {
+                        name = newName + " " + m.group(1);
+                    }
+                }
+            } else if ("project.prerequisites.maven".equals(m.group(1))) {
+                Model model = pom.getModel();
+                if (model.getPrerequisites() != null && model.getPrerequisites().getMaven() != null) {
+                    String newName = name.replace(m.group(0), model.getPrerequisites().getMaven());
+                    if (!name.equals(newName)) {
+                        name = newName + " " + m.group(1);
+                    }
+                }
             } else if (pom.getProperties().size() > 0 && pom.getProperties().containsKey(m.group(1))) {
                 String newName = name.replace(m.group(0), pom.getProperties().get(m.group(1)));
                 if (!name.equals(newName)) {
@@ -200,12 +232,12 @@ public class ModuleParser {
         return newPom;
     }
 
-    public String acquireVersion(String groupId, String artifactid, Pom pom) {
+    public String acquireVersion(String groupId, String artifactId, Pom pom) {
         String version = null;
         if (pom.getDependencyManagements() != null) {
             List<DepInfo> dependencyManagements = pom.getDependencyManagements();
             for (DepInfo depInfo : dependencyManagements) {
-                if (depInfo.getGroupId().equals(groupId) && depInfo.getArtifactId().equals(artifactid)) {
+                if (depInfo.getGroupId().equals(groupId) && depInfo.getArtifactId().equals(artifactId)) {
                     version = depInfo.getVersion();
                     return version;
                 }
@@ -216,13 +248,13 @@ public class ModuleParser {
             if (!Conf.visited.contains(parent.getSig())) {
                 parsePom(parent);
             }
-            version = acquireVersion(groupId, artifactid, parent);
+            version = acquireVersion(groupId, artifactId, parent);
         }
         return version;
     }
 
     public static void main(String[] args) {
-        Poms.init("D:\\githubProject\\camel\\");
+        Poms.init("D:\\githubProjects\\dubbo-dubbo-2.7.11\\");
         ModuleParser moduleParser = new ModuleParser();
         for (Pom pom : moduleParser.getPoms()) {
             moduleParser.parsePom(pom);

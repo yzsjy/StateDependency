@@ -1,6 +1,5 @@
 package neu.lab.dependency.pom;
 
-import com.google.javascript.jscomp.graph.DiGraph;
 import neu.lab.dependency.container.Poms;
 import neu.lab.dependency.vo.Pom;
 
