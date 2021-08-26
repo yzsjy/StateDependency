@@ -87,6 +87,16 @@ public class ModuleParser {
             if (version == null) {
                 continue;
             }
+
+            if (dependencyManagement.getType().equals("pom")) {
+                if (Poms.i().isExist(groupId, artifactId, version)) {
+                    Pom bomPom = Poms.i().getPom(groupId + ":" + artifactId + ":" + version);
+                    if (!Conf.visited.contains(bomPom.getSig())) {
+                        parsePom(bomPom);
+                    }
+                    dependencies.addAll(bomPom.getDependencyManagements());
+                }
+            }
             DepInfo depInfo = new DepInfo(groupId, artifactId, version);
             if (isProperties) {
                 depInfo.setProperty(false);

@@ -105,6 +105,13 @@ public class Pom {
     }
 
     public List<String> getDependencyManagement() {
+        if (dependencyManagement.isEmpty()) {
+            for (DepInfo depInfo : getDependencyManagements()) {
+                if (!dependencyManagement.contains(depInfo.getSig())) {
+                    dependencyManagement.add(depInfo.getSig());
+                }
+            }
+        }
         return dependencyManagement;
     }
 

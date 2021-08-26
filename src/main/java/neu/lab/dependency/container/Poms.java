@@ -390,6 +390,15 @@ public class Poms {
         return normalizePath;
     }
 
+    public boolean isExist(String groupId, String artifactId, String version) {
+        for (Pom pom : container) {
+            if (pom.getGroupId().equals(groupId) && pom.getArtifactId().equals(artifactId) && pom.getVersion().equals(version)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public static void main(String[] args) {
         Poms.init("D:\\githubProject\\camel\\");
         System.out.println("Poms size : " + Poms.i().getPoms().size());

@@ -65,8 +65,7 @@ public class Test {
             System.out.println();
         }
 
-//        Model model = PomFileIO.i().parsePomFileToModel("D:\\githubProjects\\dubbo-dubbo-2.7.11\\dubbo-registry\\dubbo-registry-api\\pom.xml");
-//        System.out.println(model.getDependencies());
+
 
 
 
