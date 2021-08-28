@@ -46,7 +46,6 @@ public class Test {
         ModuleReduce.i().generateGraph(splits[splits.length - 1]);
         ModuleReduce.i().canReduce();
 
-
         for (Pom pom : Poms.i().getPoms()) {
             System.out.println(pom.getSig());
             if (pom.getParent() != null) {
@@ -64,10 +63,6 @@ public class Test {
             System.out.println();
             System.out.println();
         }
-
-
-
-
 
 //        getCallGraph();
     }
