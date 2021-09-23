@@ -31,7 +31,7 @@ public class VersionCheck {
         PomParser.init(projPath);
         ModuleRelation.i().generateGraph();
 
-//        detectConflict();
+        detectConflict();
         reduceModule();
     }
 
@@ -46,7 +46,7 @@ public class VersionCheck {
     }
 
     public void reduceModule() {
-        String[] splits = projPath.split("/");
+        String[] splits = projPath.split("\\\\");
         ModuleReduce.i().reduceDep();
         ModuleReduce.i().generateGraph(splits[splits.length - 1]);
         writeReduceToExcelFile();
@@ -54,12 +54,12 @@ public class VersionCheck {
 
 
     public void generateGraph() {
-        String[] splits = projPath.split("/");
+        String[] splits = projPath.split("\\\\");
         Conflicts.i().generateGraphs(splits[splits.length - 1]);
     }
 
     public void printRisk() {
-        String[] splits = projPath.split("/");
+        String[] splits = projPath.split("\\\\");
         String projName = splits[splits.length - 1];
         StringBuffer stringBuffer = new StringBuffer();
         stringBuffer.append(projPath + "\n\n");
@@ -82,7 +82,7 @@ public class VersionCheck {
             if (!new File(Conf.Dir).exists()) {
                 new File(Conf.Dir).mkdirs();
             }
-            String outFile = Conf.Dir + "conflict/" + projName + ".txt";
+            String outFile = Conf.Dir + "conflict" + File.separator + projName + ".txt";
             File file = new File(outFile);
             if (!file.exists()) {
                 file.createNewFile();
@@ -96,7 +96,7 @@ public class VersionCheck {
     }
 
     public void writeToExcelFile() {
-        String[] splits = projPath.split("/");
+        String[] splits = projPath.split("\\\\");
         String projName = splits[splits.length - 1];
         int depNum = getDepNum();
         int conflictNum = Conflicts.i().getConflicts().size();
@@ -133,13 +133,14 @@ public class VersionCheck {
     }
 
     public void writeReduceToExcelFile() {
-        String[] splits = projPath.split("/");
+        String[] splits = projPath.split("\\\\");
         String projName = splits[splits.length - 1];
         int moduleNum = Poms.i().getModules().size();
         int reduceNum = ModuleReduce.i().getReduceEdge().size();
-        int usefulNum = ModuleReduce.i().getNotReduce().size();
-        int unusefulNum = ModuleReduce.i().getNotReduce().size();
-        ExcelDataVO data = new ExcelDataVO(projName, moduleNum, reduceNum, usefulNum, unusefulNum);
+//        int usefulNum = ModuleReduce.i().getNotReduce().size();
+//        int unusefulNum = ModuleReduce.i().getCanReduce().size();
+        ExcelDataVO data = new ExcelDataVO(projName, moduleNum, reduceNum);
+//        ExcelDataVO data = new ExcelDataVO(projName, moduleNum, reduceNum, usefulNum, unusefulNum);
         String filePath = Conf.Dir + "ReduceData.xlsx";
         File file = new File(filePath);
         if (file.exists()) {

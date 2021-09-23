@@ -53,7 +53,7 @@ public class ModuleReduce {
         for (int i = 0; i < len; i++) {
             reduceDepModule(temp, i);
         }
-        canReduce();
+//        canReduce();
     }
 
     public void reduceDepModule(int[][] temp, int index) {

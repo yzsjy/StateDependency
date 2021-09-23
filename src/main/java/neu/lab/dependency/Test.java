@@ -6,6 +6,7 @@ import neu.lab.dependency.handler.PomFileIO;
 import neu.lab.dependency.pom.ModuleReduce;
 import neu.lab.dependency.pom.ModuleRelation;
 import neu.lab.dependency.pom.PomParser;
+import neu.lab.dependency.smell.DetectDupDeclare;
 import neu.lab.dependency.soot.SootRiskCg;
 import neu.lab.dependency.vo.Conflict;
 import neu.lab.dependency.vo.DepInfo;
@@ -21,7 +22,7 @@ import java.util.Set;
  */
 public class Test {
     public static void main(String[] args) {
-        String projPath = "D:\\githubProjects\\dubbo-dubbo-2.7.11\\";
+        String projPath = "D:\\IdeaProjects\\ModuleOrderDetect\\";
         PomParser.init(projPath);
         ModuleRelation.i().generateGraph();
 
@@ -65,6 +66,9 @@ public class Test {
         }
 
 //        getCallGraph();
+
+//        DetectDupDeclare detectDupDeclare = new DetectDupDeclare(projPath);
+//        detectDupDeclare.init();
     }
 
     public static void getCallGraph() {

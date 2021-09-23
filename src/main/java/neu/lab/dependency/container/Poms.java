@@ -38,7 +38,7 @@ public class Poms {
         visited = new HashSet<>();
         String[] paths = FileUtil.i().getAllPomFiles(projPath);
 
-        System.out.println("Pom paths size : " + paths.length);
+//        System.out.println("Pom paths size : " + paths.length);
 
         for (String path : paths) {
             if (path.contains("src") || path.contains("test" + File.separator + "java") || path.contains("target") || path.contains("META-INF")) {

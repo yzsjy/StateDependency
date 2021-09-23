@@ -12,6 +12,7 @@ public class Conf {
     public static String outDir;
     public static boolean append;
     public static List<String> visited = new ArrayList<>();
+//    public static String Dir = "E:\\RunTest\\MultiModule\\";
     public static String Dir = "D:\\test\\";
 //    public static String Dir = "/home/b406/sunjunyan/autoExecLinux/output/module/";
 }

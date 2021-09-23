@@ -10,16 +10,15 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ReduceExcelWriter {
+public class DupDeclareExcelWriter {
     private static List<String> CELL_HEADS;
 
     static {
         CELL_HEADS = new ArrayList<>();
         CELL_HEADS.add("Project");
         CELL_HEADS.add("Module Number");
-        CELL_HEADS.add("Reduce Number");
-//        CELL_HEADS.add("Useful Number");
-//        CELL_HEADS.add("Unuseful Number");
+        CELL_HEADS.add("Dup Module Number");
+        CELL_HEADS.add("Dup Dependency Number");
     }
 
     public static Workbook exportData(ExcelDataVO data) {
@@ -99,10 +98,8 @@ public class ReduceExcelWriter {
         cell = row.createCell(cellNum++);
         cell.setCellValue(data.getModuleNum());
         cell = row.createCell(cellNum++);
-        cell.setCellValue(data.getReduceNum());
-//        cell = row.createCell(cellNum++);
-//        cell.setCellValue(data.getUsefulNum());
-//        cell = row.createCell(cellNum++);
-//        cell.setCellValue(data.getUnusefulNum());
+        cell.setCellValue(data.getDupModuleNum());
+        cell = row.createCell(cellNum++);
+        cell.setCellValue(data.getDupDepNum());
     }
 }
