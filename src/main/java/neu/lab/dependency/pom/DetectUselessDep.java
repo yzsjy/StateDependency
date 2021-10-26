@@ -13,9 +13,9 @@ public class DetectUselessDep {
 
     private int[][] modules;
     private int[][] temp;
-    private Map<String, Integer> indexs;
-    private Map<Integer, String> revertIndexs;
-    private Map<Pom, Integer> pomIndexs;
+    private Map<String, Integer> indexes;
+    private Map<Integer, String> revertIndexes;
+    private Map<Pom, Integer> pomIndexes;
     private Set<Integer> visit;
     private List<List<Integer>> reduceEdge;
     private List<List<Integer>> canReduce;
@@ -34,9 +34,9 @@ public class DetectUselessDep {
 
     public void init() {
         modules = ModuleRelation.i().getModules();
-        indexs = ModuleRelation.i().getIndexes();
-        pomIndexs = ModuleRelation.i().getPomIndexes();
-        revertIndexs = ModuleRelation.i().revertIndexes();
+        indexes = ModuleRelation.i().getIndexes();
+        pomIndexes = ModuleRelation.i().getPomIndexes();
+        revertIndexes = ModuleRelation.i().revertIndexes();
         visit = new HashSet<>();
         reduceEdge = new ArrayList<>();
         canReduce = new ArrayList<>();
@@ -64,8 +64,8 @@ public class DetectUselessDep {
         for (int i = 0; i < temp.length; i++) {
             for (int j = 0; j < temp.length; j++) {
                 if (temp[i][j] == 1) {
-                    Pom startPom = Poms.i().getPom(revertIndexs.get(i));
-                    Pom endPom = Poms.i().getPom(revertIndexs.get(j));
+                    Pom startPom = Poms.i().getPom(revertIndexes.get(i));
+                    Pom endPom = Poms.i().getPom(revertIndexes.get(j));
                     String startPath = startPom.getFilePath();
                     String endPath = endPom.getFilePath();
                     startPath = startPath.substring(0, startPath.length() - 7) + "target" + File.separator + "classes";
@@ -80,7 +80,7 @@ public class DetectUselessDep {
     }
 
     public void generateGraph(String projName) {
-        PomParser.i().generateGraph(temp, indexs, pomIndexs, "newDependencies1", projName);
+        PomParser.i().generateGraph(temp, indexes, pomIndexes, "newDependencies1", projName);
     }
 
 }

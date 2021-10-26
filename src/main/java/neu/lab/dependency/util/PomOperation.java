@@ -441,13 +441,13 @@ public class PomOperation {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        boolean bulidSuccess = false;
+        boolean buildSuccess = false;
         for (String line : outputStream.toString().split("\\n")) {
             if (line.contains("BUILD SUCCESS")) {
-                bulidSuccess = true;
+                buildSuccess = true;
             }
         }
-        return bulidSuccess;
+        return buildSuccess;
     }
 
     /**

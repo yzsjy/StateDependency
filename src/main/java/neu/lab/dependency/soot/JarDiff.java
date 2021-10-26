@@ -18,16 +18,16 @@ public class JarDiff {
         this.hostPath = hostPath;
     }
 
-    public Set<String> getDeleteMthds() {
-        Set<String> reachedMthds = SootRiskCg.i().cmpCg(usedJar, hostPath);
+    public Set<String> getDeleteMethods() {
+        Set<String> reachedMethods = SootRiskCg.i().cmpCg(usedJar, hostPath);
         Set<String> jarMthds = JarAna.i().deconstruct(testJar);
-        Set<String> deleteMthds = new HashSet<>();
-        for (String reachedMthd : reachedMthds) {
-            if (!jarMthds.contains(reachedMthd)) {
-                deleteMthds.add(reachedMthd);
+        Set<String> deleteMethods = new HashSet<>();
+        for (String reachedMethod : reachedMethods) {
+            if (!jarMthds.contains(reachedMethod)) {
+                deleteMethods.add(reachedMethod);
             }
         }
-        return deleteMthds;
+        return deleteMethods;
     }
 
 }

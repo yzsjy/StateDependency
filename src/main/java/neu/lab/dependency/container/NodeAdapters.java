@@ -5,9 +5,6 @@ import neu.lab.dependency.util.NodeAdapterCollector;
 import neu.lab.dependency.vo.DepJar;
 import neu.lab.dependency.vo.ManageNodeAdapter;
 import neu.lab.dependency.vo.NodeAdapter;
-import org.apache.maven.artifact.Artifact;
-import org.apache.maven.artifact.resolver.ArtifactNotFoundException;
-import org.apache.maven.artifact.resolver.ArtifactResolutionException;
 import org.apache.maven.shared.dependency.tree.DependencyNode;
 
 import java.util.ArrayList;
@@ -36,16 +33,17 @@ public class NodeAdapters {
         for (NodeAdapter nodeAdapter : instance.container) {
             if (nodeAdapter.isVersionChanged()) {// this node have management
                 if (null == instance.getNodeAdapter(nodeAdapter)) {
-                    // this managed-version doesnt have used node,we should new a virtual node to
-                    // find conflict
+                    // this managed-version doesn't have used node, we should create a virtual node to find conflict
                     NodeAdapter manageNd = null;
-                    for (NodeAdapter existManageNd : manageNds) {// find if manageNd exists
+                    for (NodeAdapter existManageNd : manageNds) {
+                        // find if manageNd exists
                         if (existManageNd.isSelf(nodeAdapter)) {
                             manageNd = existManageNd;
                             break;
                         }
                     }
-                    if (null == manageNd) {// dont exist manageNd,should new and add
+                    if (null == manageNd) {
+                        // don't exist manageNd,should new and add
                         manageNd = new ManageNodeAdapter(nodeAdapter);
                         manageNds.add(manageNd);
                     }
@@ -53,9 +51,8 @@ public class NodeAdapters {
             }
         }
         for (NodeAdapter manageNd : manageNds) {
-            instance.addNodeAapter(manageNd);
+            instance.addNodeAdapter(manageNd);
         }
-        // }
     }
 
     private List<NodeAdapter> container;
@@ -64,7 +61,7 @@ public class NodeAdapters {
         container = new ArrayList<NodeAdapter>();
     }
 
-    public void addNodeAapter(NodeAdapter nodeAdapter) {
+    public void addNodeAdapter(NodeAdapter nodeAdapter) {
         container.add(nodeAdapter);
     }
 

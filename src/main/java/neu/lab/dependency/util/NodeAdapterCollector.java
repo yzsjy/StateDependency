@@ -61,7 +61,7 @@ public class NodeAdapterCollector implements DependencyNodeVisitor {
             }
         }
 
-        nodeAdapters.addNodeAapter(new NodeAdapter(node));
+        nodeAdapters.addNodeAdapter(new NodeAdapter(node));
         return true;
     }
 

@@ -7,7 +7,7 @@ import neu.lab.dependency.pojo.Dep;
  */
 public interface DepMapper {
 
-    Dep selectDepJar(String groupId, String artifactid);
+    Dep selectDepJar(String groupId, String artifactId);
 
     void insertDepJar(Dep dep);
 

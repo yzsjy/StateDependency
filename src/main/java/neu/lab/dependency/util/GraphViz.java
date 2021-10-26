@@ -21,7 +21,7 @@ public class GraphViz {
         graph.append(line);
     }
 
-    public void addln(String line) {
+    public void addLine(String line) {
         graph.append(line + "\n");
     }
 

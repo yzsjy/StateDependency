@@ -1,7 +1,6 @@
 package neu.lab.dependency.smell;
 
 import neu.lab.dependency.container.Poms;
-import neu.lab.dependency.pom.ModuleRelation;
 import neu.lab.dependency.pom.PomParser;
 import neu.lab.dependency.util.Conf;
 import neu.lab.dependency.vo.DepInfo;

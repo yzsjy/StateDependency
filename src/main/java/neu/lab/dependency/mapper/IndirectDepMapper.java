@@ -6,7 +6,7 @@ import neu.lab.dependency.pojo.IndirectDep;
  * @author SUNJUNYAN
  */
 public interface IndirectDepMapper {
-    IndirectDep selectDepJar(String groupId, String artifactid);
+    IndirectDep selectDepJar(String groupId, String artifactId);
 
     void insertDepJar(IndirectDep indirectDep);
 

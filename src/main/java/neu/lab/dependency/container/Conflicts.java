@@ -14,11 +14,11 @@ import java.util.*;
 public class Conflicts {
 
     private List<Conflict> container;
-    private Set<String> leafs = new HashSet<>();
+    private Set<String> leaves = new HashSet<>();
     private int[][] modules;
     private int[][] inheritance;
-    private Map<String, Integer> indexs;
-    private Map<Integer, String> revertIndexs;
+    private Map<String, Integer> indexes;
+    private Map<Integer, String> revertIndexes;
 
     private static Conflicts instance;
 
@@ -37,8 +37,8 @@ public class Conflicts {
         container = new ArrayList<>();
         modules = ModuleRelation.i().getModules();
         inheritance = ModuleRelation.i().getInheritance();
-        indexs = ModuleRelation.i().getIndexes();
-        revertIndexs = ModuleRelation.i().revertIndexes();
+        indexes = ModuleRelation.i().getIndexes();
+        revertIndexes = ModuleRelation.i().revertIndexes();
         detectConflicts();
     }
 
@@ -49,14 +49,14 @@ public class Conflicts {
             List<String> dependencies = pom.getDependencies();
             for (String dependency : dependencies) {
                 String groupId = dependency.split(":")[0];
-                String artifctId = dependency.split(":")[1];
+                String artifactId = dependency.split(":")[1];
                 String version = dependency.split(":")[2];
-                String depInfo = groupId + ":" + artifctId;
+                String depInfo = groupId + ":" + artifactId;
                 Conflict conflict;
                 if (conflictMap.containsKey(depInfo)) {
                     conflict = conflictMap.get(depInfo);
                 } else {
-                    conflict = new Conflict(groupId, artifctId);
+                    conflict = new Conflict(groupId, artifactId);
                 }
                 conflict.addPom(pom);
                 conflict.addModuleNames(pom.getSig());
@@ -90,8 +90,8 @@ public class Conflicts {
         String path = pom.getFilePath();
         path = path.substring(0, path.length() - 7);
         File file = new File(path);
-        for (File forder : file.listFiles()) {
-            if (forder.getName().equals("src")) {
+        for (File folder : file.listFiles()) {
+            if (folder.getName().equals("src")) {
                 single = true;
                 break;
             }
@@ -111,20 +111,20 @@ public class Conflicts {
 //                }
 //            }
 //            if (isLeaf) {
-//                leafs.add(revertIndexs.get(i));
+//                leaves.add(revertIndexes.get(i));
 //            }
 //        }
 
         for (Pom pom : Poms.i().getPoms()) {
             if (isLeaf(pom)) {
-                leafs.add(pom.getSig());
+                leaves.add(pom.getSig());
             }
         }
         List<Pom> poms = new ArrayList<>();
         for (Pom pom : Poms.i().getPoms()) {
             String name = pom.getSig();
-            if (leafs.contains(name)) {
-                if (isSingle(indexs.get(pom.getSig()))) {
+            if (leaves.contains(name)) {
+                if (isSingle(indexes.get(pom.getSig()))) {
                     continue;
                 }
                 poms.add(pom);
@@ -154,16 +154,16 @@ public class Conflicts {
 
     public void generateGraphs(String projName) {
         Set<String> conflictModules = getConflictModules();
-//        System.out.println(indexs.size());
-//        for (Map.Entry<String, Integer> entry : indexs.entrySet()) {
+//        System.out.println(indexes.size());
+//        for (Map.Entry<String, Integer> entry : indexes.entrySet()) {
 //            System.out.println(entry.getKey() + "    " + entry.getValue());
 //        }
 //
-//        for (Map.Entry<Integer, String> entry : revertIndexs.entrySet()) {
+//        for (Map.Entry<Integer, String> entry : revertIndexes.entrySet()) {
 //            System.out.println(entry.getKey() + "    " + entry.getValue());
 //        }
-        PomParser.i().generateGraph(modules, indexs, conflictModules, "dependencies", projName);
-        PomParser.i().generateGraph(inheritance, indexs, conflictModules, projName);
+        PomParser.i().generateGraph(modules, indexes, conflictModules, "dependencies", projName);
+        PomParser.i().generateGraph(inheritance, indexes, conflictModules, projName);
     }
 
     public List<Conflict> getRealConflicts() {
@@ -187,9 +187,9 @@ public class Conflicts {
             moduleNames.addAll(conflict.getModuleNames());
             moduleNames.removeAll(names);
             for (String name : names) {
-                List<Integer> visited = getReachModules(indexs.get(name));
+                List<Integer> visited = getReachModules(indexes.get(name));
                 for (int i : visited) {
-                    if (moduleNames.contains(revertIndexs.get(i))) {
+                    if (moduleNames.contains(revertIndexes.get(i))) {
                         return true;
                     }
                 }

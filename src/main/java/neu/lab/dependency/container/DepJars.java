@@ -29,8 +29,8 @@ public class DepJars {
     private Set<DepJar> container;
     private DepJar hostDepJar;
 
-    private DepJars(NodeAdapters nodeAdapters) throws Exception {
-        container = new HashSet<DepJar>();
+    private DepJars(NodeAdapters nodeAdapters) {
+        container = new HashSet<>();
         for (NodeAdapter nodeAdapter : nodeAdapters.getAllNodeAdapter()) {
             container.add(new DepJar(nodeAdapter.getGroupId(), nodeAdapter.getArtifactId(), nodeAdapter.getVersion(),
                     nodeAdapter.getClassifier(), nodeAdapter.getFilePath()));
@@ -44,7 +44,7 @@ public class DepJars {
      * @return
      */
     public Set<DepJar> getUsedDepJars() {
-        Set<DepJar> usedDepJars = new HashSet<DepJar>();
+        Set<DepJar> usedDepJars = new HashSet<>();
         for (DepJar depJar : container) {
             if (depJar.isSelected()) {
                 usedDepJars.add(depJar);
@@ -97,7 +97,7 @@ public class DepJars {
      * @return
      */
     public List<String> getUsedJarPaths() {
-        List<String> usedJarPaths = new ArrayList<String>();
+        List<String> usedJarPaths = new ArrayList<>();
         for (DepJar depJar : DepJars.i().getAllDepJar()) {
             if (depJar.isSelected()) {
                 for (String path : depJar.getJarFilePaths(true)) {
@@ -115,7 +115,7 @@ public class DepJars {
      * @return
      */
     public List<String> getUsedJarPaths(DepJar usedDepJar) {
-        List<String> usedJarPaths = new ArrayList<String>();
+        List<String> usedJarPaths = new ArrayList<>();
         for (DepJar depJar : DepJars.i().getAllDepJar()) {
             if (depJar.isSelected()) {
                 if (depJar.isSameLib(usedDepJar)) {

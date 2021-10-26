@@ -184,6 +184,6 @@ public class PomParser {
         ModuleRelation.i().generateGraph();
         int[][] modules = ModuleRelation.i().getModules();
         int[][] inheritance = ModuleRelation.i().getInheritance();
-        Map<String, Integer> indexs = ModuleRelation.i().getIndexes();
+        Map<String, Integer> indexes = ModuleRelation.i().getIndexes();
     }
 }
