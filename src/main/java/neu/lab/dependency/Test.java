@@ -23,9 +23,11 @@ import java.util.Set;
  */
 public class Test {
     public static void main(String[] args) {
-        String projPath = "D:\\githubProjects\\dropwizard-2.0.25\\";
+        String projPath = "D:\\githubProjects\\artemis-odb-develop\\";
         PomParser.init(projPath);
         ModuleRelation.i().generateGraph();
+
+        System.out.println(Poms.i().getPoms().size());
 
         Conflicts.init();
         String[] splits = projPath.split("\\\\");
@@ -44,6 +46,7 @@ public class Test {
 //            System.out.println(conflict.getSig() + " safe version : " + conflict.getSafeVersion());
             System.out.println();
         }
+
         ModuleReduce.i().reduceDep();
         ModuleReduce.i().generateGraph(splits[splits.length - 1]);
 
