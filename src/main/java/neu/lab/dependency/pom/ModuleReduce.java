@@ -11,10 +11,10 @@ public class ModuleReduce {
 
     private static ModuleReduce instance;
 
-    private int[][] modules;
     private int[][] temp;
-    private Map<String, Integer> indexs;
-    private Map<Integer, String> revertIndexs;
+    private Map<String, Integer> indexes;
+    private Map<Integer, String> revertIndexes;
+    private Map<Pom, Integer> pomIndexes;
     private Set<Integer> visit;
     private List<List<Integer>> reduceEdge;
     private List<List<Integer>> canReduce;
@@ -32,9 +32,10 @@ public class ModuleReduce {
     }
 
     public void init() {
-        modules = ModuleRelation.i().getModules();
-        indexs = ModuleRelation.i().getIndexs();
-        revertIndexs = ModuleRelation.i().revertIndexs();
+        int[][] modules = ModuleRelation.i().getModules();
+        indexes = ModuleRelation.i().getIndexes();
+        pomIndexes = ModuleRelation.i().getPomIndexes();
+        revertIndexes = ModuleRelation.i().revertIndexes();
         visit = new HashSet<>();
         reduceEdge = new ArrayList<>();
         canReduce = new ArrayList<>();
@@ -53,7 +54,7 @@ public class ModuleReduce {
         for (int i = 0; i < len; i++) {
             reduceDepModule(temp, i);
         }
-//        canReduce();
+        canReduce();
     }
 
     public void reduceDepModule(int[][] temp, int index) {
@@ -136,21 +137,21 @@ public class ModuleReduce {
     }
 
     public void generateGraph(String projName) {
-        PomParser.i().generateGraph(temp, indexs, "newDependencies", projName);
+        PomParser.i().generateGraph(temp, indexes, pomIndexes, "newDependencies", projName);
     }
 
     public void canReduce() {
         for (List<Integer> list : reduceEdge) {
             int start = list.get(0);
             int end = list.get(1);
-            Pom startPom = Poms.i().getPom(revertIndexs.get(start));
-            Pom endPom = Poms.i().getPom(revertIndexs.get(end));
+            Pom startPom = Poms.i().getPom(revertIndexes.get(start));
+            Pom endPom = Poms.i().getPom(revertIndexes.get(end));
             String startPath = startPom.getFilePath();
             String endPath = endPom.getFilePath();
             startPath = startPath.substring(0, startPath.length() - 7) + "target" + File.separator + "classes";
             endPath = endPath.substring(0, endPath.length() - 7) + "target" + File.separator + "classes";
-            Set<String> mthds = SootRiskCg.i().cmpCg(startPath, endPath);
-            if (mthds.isEmpty()) {
+            Set<String> methods = SootRiskCg.i().cmpCg(startPath, endPath);
+            if (methods.isEmpty()) {
                 canReduce.add(list);
             } else {
                 notReduce.add(list);

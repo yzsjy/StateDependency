@@ -37,8 +37,8 @@ public class Conflicts {
         container = new ArrayList<>();
         modules = ModuleRelation.i().getModules();
         inheritance = ModuleRelation.i().getInheritance();
-        indexs = ModuleRelation.i().getIndexs();
-        revertIndexs = ModuleRelation.i().revertIndexs();
+        indexs = ModuleRelation.i().getIndexes();
+        revertIndexs = ModuleRelation.i().revertIndexes();
         detectConflicts();
     }
 

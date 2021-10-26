@@ -15,6 +15,7 @@ public class Pom {
     private String artifactId;
     private String version;
     private String packaging;
+    private String name;
     private Model model;
     private Pom parent;
     private String filePath;
@@ -209,6 +210,14 @@ public class Pom {
 
     public void setModulePath(String modulePath) {
         this.modulePath = modulePath;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public boolean isSelf(String groupId, String artifactId, String version) {

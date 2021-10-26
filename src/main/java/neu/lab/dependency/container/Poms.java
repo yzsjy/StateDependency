@@ -78,6 +78,7 @@ public class Poms {
         String groupId = model.getGroupId();
         String version = model.getVersion();
         String packaging = model.getPackaging();
+        String name = model.getName();
         Parent parent = model.getParent();
 
         if (groupId == null && parent != null) {
@@ -102,6 +103,9 @@ public class Poms {
         pom.setArtifactId(artifactId);
         pom.setVersion(version);
         pom.setPackaging(packaging);
+        if (name != null) {
+            pom.setName(name);
+        }
         if (parent != null) {
             String parentArtifactId = parent.getArtifactId();
             if (parentArtifactId.contains("${")) {

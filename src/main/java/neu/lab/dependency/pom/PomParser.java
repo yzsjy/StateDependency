@@ -143,11 +143,16 @@ public class PomParser {
         }
     }
 
-    public void generateGraph(int[][] map, Map<String, Integer> indexs, String classify, String projName) {
+    public void generateGraph(int[][] map, Map<String, Integer> indexs, Map<Pom, Integer> pomIndexs, String classify, String projName) {
         int size = indexs.size();
         Node[] nodes = new Node[size];
-        for (Map.Entry<String, Integer> entry : indexs.entrySet()) {
-            nodes[entry.getValue()] = node(entry.getKey());
+        for (Map.Entry<Pom, Integer> entry : pomIndexs.entrySet()) {
+            if (entry.getKey().getName() != null) {
+                nodes[entry.getValue()] = node(entry.getKey().getName());
+            } else {
+                nodes[entry.getValue()] = node(entry.getKey().getSig());
+            }
+
         }
         List<Node> nodeList = new ArrayList<>();
         for (int i = 0; i < map.length; i++) {
@@ -179,6 +184,6 @@ public class PomParser {
         ModuleRelation.i().generateGraph();
         int[][] modules = ModuleRelation.i().getModules();
         int[][] inheritance = ModuleRelation.i().getInheritance();
-        Map<String, Integer> indexs = ModuleRelation.i().getIndexs();
+        Map<String, Integer> indexs = ModuleRelation.i().getIndexes();
     }
 }
