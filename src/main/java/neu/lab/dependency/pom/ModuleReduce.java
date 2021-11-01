@@ -1,6 +1,7 @@
 package neu.lab.dependency.pom;
 
 import neu.lab.dependency.container.Poms;
+import neu.lab.dependency.graph.GenerateGraphviz;
 import neu.lab.dependency.soot.SootRiskCg;
 import neu.lab.dependency.vo.Pom;
 
@@ -91,13 +92,14 @@ public class ModuleReduce {
             List<Integer> array = new ArrayList<>(size);
             for (int i = 0; i < size; i++) {
                 int t = queue.poll();
+                if (find.contains(t)) {
+                    continue;
+                }
                 find.add(t);
                 array.add(t);
                 for (int j = 0; j < temp.length; j++) {
-                    if (temp[t][j] == 1) {
-                        if (!find.contains(j)) {
-                            queue.offer(j);
-                        }
+                    if (temp[t][j] == 1 && !find.contains(j)) {
+                        queue.offer(j);
                     }
                 }
             }
@@ -137,7 +139,7 @@ public class ModuleReduce {
     }
 
     public void generateGraph(String projName) {
-        PomParser.i().generateGraph(temp, indexes, pomIndexes, "newDependencies", projName);
+        GenerateGraphviz.i().reduceGraph(temp, indexes, pomIndexes, projName, "reduceModule");
     }
 
     public void canReduce() {

@@ -1,5 +1,6 @@
 package neu.lab.dependency.container;
 
+import neu.lab.dependency.graph.GenerateGraphviz;
 import neu.lab.dependency.pom.ModuleRelation;
 import neu.lab.dependency.pom.PomParser;
 import neu.lab.dependency.vo.Conflict;
@@ -154,16 +155,8 @@ public class Conflicts {
 
     public void generateGraphs(String projName) {
         Set<String> conflictModules = getConflictModules();
-//        System.out.println(indexes.size());
-//        for (Map.Entry<String, Integer> entry : indexes.entrySet()) {
-//            System.out.println(entry.getKey() + "    " + entry.getValue());
-//        }
-//
-//        for (Map.Entry<Integer, String> entry : revertIndexes.entrySet()) {
-//            System.out.println(entry.getKey() + "    " + entry.getValue());
-//        }
-        PomParser.i().generateGraph(modules, indexes, conflictModules, "dependencies", projName);
-        PomParser.i().generateGraph(inheritance, indexes, conflictModules, projName);
+        GenerateGraphviz.i().inheritGraph(inheritance, indexes, conflictModules, projName);
+        GenerateGraphviz.i().moduleGraph(modules, indexes, conflictModules, projName, "dependencies");
     }
 
     public List<Conflict> getRealConflicts() {

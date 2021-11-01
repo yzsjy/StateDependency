@@ -4,8 +4,6 @@ import neu.lab.dependency.container.DepJars;
 import neu.lab.dependency.container.NodeAdapters;
 import neu.lab.dependency.util.Conf;
 import neu.lab.dependency.util.MavenUtil;
-import neu.lab.dependency.version.DefaultVersionsHelper;
-import neu.lab.dependency.version.VersionsHelper;
 import neu.lab.dependency.vo.DepJar;
 import org.apache.maven.artifact.factory.ArtifactFactory;
 import org.apache.maven.artifact.manager.WagonManager;
@@ -111,8 +109,6 @@ public abstract class DependencyMojo extends AbstractMojo {
 
     public long systemFileSize = 0;
 
-    private VersionsHelper helper;
-
     protected void initGlobalVar() throws Exception {
         MavenUtil.i().setMojo(this);
         Conf.outDir = resultPath;
@@ -137,17 +133,6 @@ public abstract class DependencyMojo extends AbstractMojo {
         MavenUtil.i().getLog().info("tree size:" + DepJars.i().getAllDepJar().size() + ", used size:" + systemSize
                 + ", usedFile size:" + systemFileSize / 1000);
 
-    }
-
-    public VersionsHelper getHelper()
-            throws MojoExecutionException {
-        if (helper == null) {
-            helper = new DefaultVersionsHelper(factory, resolver, artifactMetadataSource,
-                    remoteArtifactRepositories, remotePluginRepositories, localRepository,
-                    wagonManager, settings, serverId, rulesUri, getLog(), session,
-                    pathTranslator);
-        }
-        return helper;
     }
 
     @Override

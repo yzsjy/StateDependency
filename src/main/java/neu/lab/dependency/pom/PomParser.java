@@ -1,25 +1,10 @@
 package neu.lab.dependency.pom;
 
-import guru.nidi.graphviz.attribute.Arrow;
-import guru.nidi.graphviz.attribute.Color;
-import guru.nidi.graphviz.attribute.Rank;
-import guru.nidi.graphviz.attribute.Style;
-import guru.nidi.graphviz.engine.Format;
-import guru.nidi.graphviz.engine.Graphviz;
-import guru.nidi.graphviz.model.Graph;
-import guru.nidi.graphviz.model.Link;
-import guru.nidi.graphviz.model.Node;
 import neu.lab.dependency.container.Poms;
-import neu.lab.dependency.util.Conf;
 import neu.lab.dependency.vo.DepInfo;
 import neu.lab.dependency.vo.Pom;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.*;
-
-import static guru.nidi.graphviz.attribute.Rank.RankDir.LEFT_TO_RIGHT;
-import static guru.nidi.graphviz.model.Factory.*;
 
 /**
  * @author SUNJUNYAN
@@ -83,98 +68,6 @@ public class PomParser {
         pom.setInheritDependencies(dependencies);
         pom.setInheritDepManagements(dependencyManagement);
         visited.add(pom.getSig());
-    }
-
-    public void generateGraph(int[][] map, Map<String, Integer> indexs, Set<String> conflicts, String projName) {
-        int size = indexs.size();
-        Node[] nodes = new Node[size];
-        for (Map.Entry<String, Integer> entry : indexs.entrySet()) {
-            if (conflicts.contains(entry.getKey())) {
-                nodes[entry.getValue()] = node(entry.getKey()).with(Color.RED.font());
-            } else {
-                nodes[entry.getValue()] = node(entry.getKey());
-            }
-        }
-        List<Node> nodeList = new ArrayList<>();
-        for (int i = 0; i < map.length; i++) {
-            List<Link> links = new ArrayList<>();
-            for (int j = 0; j < map[i].length; j++) {
-                if (map[i][j] == 1) {
-                    links.add(to(nodes[j]).with(Arrow.NORMAL.open()));
-                }
-            }
-            nodeList.add(nodes[i].link(links));
-        }
-
-        Graph g = graph("example").directed().graphAttr().with(Rank.dir(LEFT_TO_RIGHT)).with(nodeList);
-        try {
-            Graphviz.fromGraph(g).render(Format.PNG).toFile(new File(Conf.Dir + "graph" + File.separator + projName + File.separator + "inheritance.png"));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void generateGraph(int[][] map, Map<String, Integer> indexs, Set<String> conflicts, String classify, String projName) {
-        int size = indexs.size();
-        Node[] nodes = new Node[size];
-        for (Map.Entry<String, Integer> entry : indexs.entrySet()) {
-            if (conflicts.contains(entry.getKey())) {
-                nodes[entry.getValue()] = node(entry.getKey()).with(Color.RED.font());
-            } else {
-                nodes[entry.getValue()] = node(entry.getKey());
-            }
-        }
-        List<Node> nodeList = new ArrayList<>();
-        for (int i = 0; i < map.length; i++) {
-            List<Link> links = new ArrayList<>();
-            for (int j = 0; j < map[i].length; j++) {
-                if (map[i][j] == 1) {
-                    links.add(to(nodes[j]));
-                }
-            }
-            nodeList.add(nodes[i].link(links));
-        }
-
-        Graph g = graph("example").directed().graphAttr().with(Rank.dir(LEFT_TO_RIGHT)).with(nodeList);
-        try {
-            Graphviz.fromGraph(g).render(Format.PNG).toFile(new File(Conf.Dir + "graph" + File.separator + projName + File.separator + classify + ".png"));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void generateGraph(int[][] map, Map<String, Integer> indexs, Map<Pom, Integer> pomIndexs, String classify, String projName) {
-        int size = indexs.size();
-        Node[] nodes = new Node[size];
-        for (Map.Entry<Pom, Integer> entry : pomIndexs.entrySet()) {
-            if (entry.getKey().getName() != null) {
-                nodes[entry.getValue()] = node(entry.getKey().getName());
-            } else {
-                nodes[entry.getValue()] = node(entry.getKey().getSig());
-            }
-
-        }
-        List<Node> nodeList = new ArrayList<>();
-        for (int i = 0; i < map.length; i++) {
-            List<Link> links = new ArrayList<>();
-            for (int j = 0; j < map[i].length; j++) {
-                if (map[i][j] == 1) {
-                    links.add(to(nodes[j]));
-                } else if (map[i][j] == 2) {
-                    links.add(to(nodes[j]).with(Color.RED));
-                } else if (map[i][j] == 3) {
-                    links.add(to(nodes[j]).with(Color.BLUE).with(Style.DOTTED));
-                }
-            }
-            nodeList.add(nodes[i].link(links));
-        }
-
-        Graph g = graph("example").directed().graphAttr().with(Rank.dir(LEFT_TO_RIGHT)).with(nodeList);
-        try {
-            Graphviz.fromGraph(g).render(Format.PNG).toFile(new File(Conf.Dir + "graph" + File.separator + projName + File.separator + classify + ".png"));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     public static void main(String[] args) {

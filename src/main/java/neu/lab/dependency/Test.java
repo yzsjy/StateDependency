@@ -23,7 +23,7 @@ import java.util.Set;
  */
 public class Test {
     public static void main(String[] args) {
-        String projPath = "D:\\githubProjects\\artemis-odb-develop\\";
+        String projPath = "D:\\githubProjects\\zrlog\\";
         PomParser.init(projPath);
         ModuleRelation.i().generateGraph();
 

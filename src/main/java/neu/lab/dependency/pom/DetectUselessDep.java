@@ -1,6 +1,7 @@
 package neu.lab.dependency.pom;
 
 import neu.lab.dependency.container.Poms;
+import neu.lab.dependency.graph.GenerateGraphviz;
 import neu.lab.dependency.soot.SootRiskCg;
 import neu.lab.dependency.vo.Pom;
 
@@ -80,7 +81,7 @@ public class DetectUselessDep {
     }
 
     public void generateGraph(String projName) {
-        PomParser.i().generateGraph(temp, indexes, pomIndexes, "newDependencies1", projName);
+        GenerateGraphviz.i().reduceGraph(temp, indexes, pomIndexes, projName, "uselessModule");
     }
 
 }

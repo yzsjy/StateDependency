@@ -1,4 +1,4 @@
-package neu.lab.dependency.handler;
+package neu.lab.dependency.graph;
 
 import neu.lab.dependency.vo.ListGraph;
 
