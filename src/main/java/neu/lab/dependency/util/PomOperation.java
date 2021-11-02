@@ -488,11 +488,13 @@ public class PomOperation {
         backupPom(savePath, pomPath);
         List<String> canRemoves = new ArrayList<>();
         SAXReader reader = new SAXReader();
-        boolean canReduce = false;
         try {
             Document document = reader.read(pomPath);
             Element rootElement =document.getRootElement();
             Element dependencies = rootElement.element("dependencies");
+            if (dependencies == null) {
+                return canRemoves;
+            }
             Iterator dependencyIterator = dependencies.elementIterator("dependency");
             while (dependencyIterator.hasNext()) {
                 Element dependency = (Element) dependencyIterator.next();
@@ -510,6 +512,8 @@ public class PomOperation {
             writer.close();
         } catch (Exception e) {
             e.printStackTrace();
+            System.out.println(removes);
+            System.out.println(pom.getFilePath());
         }
         return canRemoves;
     }

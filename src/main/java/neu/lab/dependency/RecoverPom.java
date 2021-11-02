@@ -8,7 +8,7 @@ import java.io.File;
 public class RecoverPom {
 
     public static void main(String[] args) {
-        String path = "D:\\githubProjects\\zrlog\\";
+        String path = "D:\\githubProjects\\orientdb-3.1.13\\";
         recoverPom(path);
     }
 
@@ -30,6 +30,7 @@ public class RecoverPom {
             }
             if (pomFile != null && pomCopyFile != null) {
                 PomOperation.i().backupPom(pomFile, pomCopyFile);
+                pomCopyFile.delete();
             }
         }
 
