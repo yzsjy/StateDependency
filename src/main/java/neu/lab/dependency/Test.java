@@ -48,6 +48,7 @@ public class Test {
         }
 
         ModuleReduce.i().reduceDep();
+        ModuleReduce.i().relationReduce();
         ModuleReduce.i().generateGraph(splits[splits.length - 1]);
 
 //        DetectUselessDep.i().reduceDep();

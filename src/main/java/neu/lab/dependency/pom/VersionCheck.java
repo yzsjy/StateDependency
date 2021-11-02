@@ -136,7 +136,7 @@ public class VersionCheck {
         String[] splits = projPath.split("\\\\");
         String projName = splits[splits.length - 1];
         int moduleNum = Poms.i().getModules().size();
-        int reduceNum = ModuleReduce.i().getReduceEdge().size();
+        int reduceNum = ModuleReduce.i().getReduceEdges().size();
 //        int usefulNum = ModuleReduce.i().getNotReduce().size();
 //        int unusefulNum = ModuleReduce.i().getCanReduce().size();
         ExcelDataVO data = new ExcelDataVO(projName, moduleNum, reduceNum);

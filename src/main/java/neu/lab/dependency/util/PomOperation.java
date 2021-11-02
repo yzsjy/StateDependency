@@ -2,6 +2,7 @@ package neu.lab.dependency.util;
 
 import neu.lab.dependency.vo.DependencyInfo;
 import neu.lab.dependency.vo.NodeAdapter;
+import neu.lab.dependency.vo.Pom;
 import org.apache.commons.exec.CommandLine;
 import org.apache.commons.exec.DefaultExecutor;
 import org.apache.commons.exec.PumpStreamHandler;
@@ -22,8 +23,11 @@ import java.util.*;
  */
 
 public class PomOperation {
-    public String POM_PATH = MavenUtil.i().getProjectPom();
-    public String POM_PATH_COPY = MavenUtil.i().getBaseDir().getAbsolutePath() + "/pom-copy.xml";
+//    public String POM_PATH = MavenUtil.i().getProjectPom();
+//    public String POM_PATH_COPY = MavenUtil.i().getBaseDir().getAbsolutePath() + "/pom-copy.xml";
+
+    public String POM_PATH = "";
+    public String POM_PATH_COPY = "";
     public File POM_FILE;
     public File POM_FILE_COPY;
     private Set<String> dependencyInPom;
@@ -38,8 +42,8 @@ public class PomOperation {
     }
 
     private PomOperation() {
-        POM_FILE = new File(POM_PATH);
-        POM_FILE_COPY = new File(POM_PATH_COPY);
+//        POM_FILE = new File(POM_PATH);
+//        POM_FILE_COPY = new File(POM_PATH_COPY);
     }
 
     /**
@@ -389,16 +393,27 @@ public class PomOperation {
         return true;
     }
 
-    public void backupCheckPom(String path) {
-        MavenUtil.i().getLog().info("Backup pom-copy.xml to " + path);
-        if (new File(path).exists()) {
-            new File(path).delete();
+    public void backupPom(String savePath, String filePath) {
+        if (new File(savePath).exists()) {
+            new File(savePath).delete();
         }
         try {
-            Files.copy(new File(POM_PATH_COPY).toPath(), new File(path).toPath());
+            Files.copy(new File(filePath).toPath(), new File(savePath).toPath());
         } catch (IOException e){
-            MavenUtil.i().getLog().error("Fail to backup pom-copy.xml to " + path);
-            MavenUtil.i().getLog().error(e.getMessage());
+            System.err.println("Fail to backup pom.xml to " + savePath);
+            e.printStackTrace();
+        }
+    }
+
+    public void backupPom(File savePath, File filePath) {
+        if (savePath.exists()) {
+            savePath.delete();
+        }
+        try {
+            Files.copy(filePath.toPath(), savePath.toPath());
+        } catch (IOException e){
+            System.err.println("Fail to backup pom.xml to " + savePath);
+            e.printStackTrace();
         }
     }
 
@@ -465,5 +480,37 @@ public class PomOperation {
             new File(path).delete();
         }
         MavenUtil.i().getLog().info("delete " + path);
+    }
+
+    public List<String> removeDependency(Pom pom, List<String> removes) {
+        String pomPath = pom.getFilePath();
+        String savePath = pomPath.substring(0, pomPath.length() - 7) + "pom-copy.xml";
+        backupPom(savePath, pomPath);
+        List<String> canRemoves = new ArrayList<>();
+        SAXReader reader = new SAXReader();
+        boolean canReduce = false;
+        try {
+            Document document = reader.read(pomPath);
+            Element rootElement =document.getRootElement();
+            Element dependencies = rootElement.element("dependencies");
+            Iterator dependencyIterator = dependencies.elementIterator("dependency");
+            while (dependencyIterator.hasNext()) {
+                Element dependency = (Element) dependencyIterator.next();
+                String groupId = dependency.element("groupId").getText();
+                String artifactId = dependency.element("artifactId").getText();
+                if (groupId != null && artifactId != null && removes.contains(groupId + ":" + artifactId)) {
+                    dependencies.remove(dependency);
+                    canRemoves.add(groupId + ":" + artifactId);
+                }
+            }
+            OutputFormat outputFormat = OutputFormat.createPrettyPrint();
+            outputFormat.setEncoding("UTF-8");
+            XMLWriter writer = new XMLWriter(new FileWriter(pomPath), outputFormat);
+            writer.write(document);
+            writer.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return canRemoves;
     }
 }
