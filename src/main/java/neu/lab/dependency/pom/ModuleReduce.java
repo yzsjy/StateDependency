@@ -2,6 +2,7 @@ package neu.lab.dependency.pom;
 
 import neu.lab.dependency.container.Poms;
 import neu.lab.dependency.graph.GenerateGraphviz;
+import neu.lab.dependency.graph.TransitiveReduce;
 import neu.lab.dependency.soot.SootRiskCg;
 import neu.lab.dependency.vo.Pom;
 
@@ -51,10 +52,22 @@ public class ModuleReduce {
 //            reduceDepModule(temp, reduceIndex);
 //            reduceIndex = findIndex(temp);
 //        }
-        int len = temp.length;
-        for (int i = 0; i < len; i++) {
-            reduceDepModule(temp, i);
+
+//        int len = temp.length;
+//        for (int i = 0; i < len; i++) {
+//            reduceDepModule(temp, i);
+//        }
+
+        TransitiveReduce transitiveReduce = new TransitiveReduce(temp);
+        int[][] res = transitiveReduce.getRes();
+        for (int i = 0; i < res.length; i++) {
+            for (int j = 0; j < res.length; j++) {
+                if (res[i][j] == 0 && temp[i][j] == 1) {
+                    temp[i][j] = 2;
+                }
+            }
         }
+
 //        canReduce();
     }
 
