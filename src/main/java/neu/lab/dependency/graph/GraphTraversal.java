@@ -11,6 +11,7 @@ import java.util.LinkedList;
  * @author SUNJUNYAN
  */
 public class GraphTraversal {
+
     private ListGraph graph;
     /**
      * 被访问过的节点

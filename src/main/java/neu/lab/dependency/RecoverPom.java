@@ -8,7 +8,7 @@ import java.io.File;
 public class RecoverPom {
 
     public static void main(String[] args) {
-        String path = "D:\\githubProjects\\orientdb-3.1.13\\";
+        String path = "E:\\unzip1\\Akka-Essentials-master\\";
         recoverPom(path);
     }
 

@@ -23,7 +23,7 @@ import java.util.Set;
  */
 public class Test {
     public static void main(String[] args) {
-        String projPath = "D:\\githubProjects\\orientdb-3.1.13\\";
+        String projPath = "E:\\unzip1\\Akka-Essentials-master\\";
         PomParser.init(projPath);
         ModuleRelation.i().generateGraph();
 
