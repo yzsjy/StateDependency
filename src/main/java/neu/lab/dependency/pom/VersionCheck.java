@@ -49,21 +49,20 @@ public class VersionCheck {
 
     public void reduceModule() {
         String path = projPath + "pom.xml";
-        long preTime = PomOperation.i().mvnParallelBuildTime(path);
+        PomOperation.i().mvnClean(path);
+        long preTime = PomOperation.i().mvnSerialBuildTime(path);
         PomOperation.i().mvnClean(path);
         long beforeTime = 0;
         long afterTime = 0;
-        if (preTime != -1) {
-            String[] splits = projPath.split("/");
-            ModuleReduce.i().reduceDep();
-            ModuleReduce.i().relationReduce();
-            ModuleReduce.i().generateGraph(splits[splits.length - 1]);
-            afterTime = PomOperation.i().mvnParallelBuildTime(path);
-            RecoverPom rp = new RecoverPom(projPath);
-            rp.recoverPom();
-            PomOperation.i().mvnClean(path);
-            beforeTime = PomOperation.i().mvnParallelBuildTime(path);
-        }
+        String[] splits = projPath.split("/");
+        ModuleReduce.i().reduceDep();
+        ModuleReduce.i().relationReduce();
+        ModuleReduce.i().generateGraph(splits[splits.length - 1]);
+        afterTime = PomOperation.i().mvnParallelBuildTime(path);
+        RecoverPom rp = new RecoverPom(projPath);
+        rp.recoverPom();
+        PomOperation.i().mvnClean(path);
+        beforeTime = PomOperation.i().mvnParallelBuildTime(path);
         writeReduceToExcelFile(preTime, beforeTime, afterTime);
     }
 

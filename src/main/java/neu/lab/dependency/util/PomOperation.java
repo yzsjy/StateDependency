@@ -5,6 +5,7 @@ import neu.lab.dependency.vo.Pom;
 import org.apache.commons.exec.CommandLine;
 import org.apache.commons.exec.DefaultExecutor;
 import org.apache.commons.exec.PumpStreamHandler;
+import org.apache.maven.shared.invoker.*;
 import org.dom4j.Document;
 import org.dom4j.Element;
 import org.dom4j.io.OutputFormat;
@@ -60,73 +61,78 @@ public class PomOperation {
         }
     }
 
-    public long mvnSerialBuildTime(String projPath) {
-        System.out.println("Start to build ...");
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        PumpStreamHandler streamHandler = new PumpStreamHandler(outputStream);
-        CommandLine cmdLine = CommandLine.parse("cmd /k mvn -f=" + projPath + " install -DskipTests=true -Dmaven.test.skip=true");
-        DefaultExecutor executor = new DefaultExecutor();
+    public long mvnParallelBuildTime(String path) {
+        InvocationRequest request = new DefaultInvocationRequest();
+        request.setPomFile(new File(path));
+        request.setGoals(Collections.singletonList("install -DskipTests=true -Dmaven.test.skip=true"));
+
+        Invoker invoker = new DefaultInvoker();
+        invoker.setMavenHome(new File(System.getenv("MAVEN_HOME")));
+        boolean buildSuccess = false;
         long startTime = System.currentTimeMillis();
         try {
-            executor.setStreamHandler(streamHandler);
-            executor.execute(cmdLine);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        long endTime = System.currentTimeMillis();
-        boolean buildSuccess = false;
-        for (String line : outputStream.toString().split("\\n")) {
-            if (line.contains("BUILD SUCCESS")) {
+            invoker.setOutputHandler(null);
+            InvocationResult invocationResult = invoker.execute(request);
+            if (invocationResult.getExitCode() != 0) {
+                System.out.println("Failed to build");
+            } else {
+                System.out.println("Successfully build");
                 buildSuccess = true;
             }
+        } catch (MavenInvocationException e) {
+            System.out.println("Exception : Failed to build");
         }
+        long endTime = System.currentTimeMillis();
         return buildSuccess ? (endTime - startTime) / 1000 : -1;
     }
 
-    public long mvnParallelBuildTime(String projPath) {
-        System.out.println("Start to build ...");
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        PumpStreamHandler streamHandler = new PumpStreamHandler(outputStream);
-        CommandLine cmdLine = CommandLine.parse("mvn -f=" + projPath + " -T 1C install -DskipTests=true -Dmaven.test.skip=true");
-        DefaultExecutor executor = new DefaultExecutor();
-        long startTime = System.currentTimeMillis();
-        try {
-            executor.setStreamHandler(streamHandler);
-            executor.execute(cmdLine);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        long endTime = System.currentTimeMillis();
-        boolean buildSuccess = false;
-        for (String line : outputStream.toString().split("\\n")) {
-            if (line.contains("BUILD SUCCESS")) {
-                buildSuccess = true;
-            }
-        }
-        return buildSuccess ? (endTime - startTime) / 1000 : -1;
-    }
+    public boolean mvnClean(String path) {
+        InvocationRequest request = new DefaultInvocationRequest();
+        System.out.println(path);
+        request.setPomFile(new File(path));
+        request.setGoals(Collections.singletonList("clean"));
 
-    public boolean mvnClean(String projPath) {
-        System.out.println("Start to clean ...");
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        PumpStreamHandler streamHandler = new PumpStreamHandler(outputStream);
-        CommandLine cmdLine = CommandLine.parse("mvn -f=" + projPath + " clean");
-        DefaultExecutor executor = new DefaultExecutor();
-        long startTime = System.currentTimeMillis();
-        try {
-            executor.setStreamHandler(streamHandler);
-            executor.execute(cmdLine);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        long endTime = System.currentTimeMillis();
+        Invoker invoker = new DefaultInvoker();
+        invoker.setMavenHome(new File(System.getenv("MAVEN_HOME")));
         boolean buildSuccess = false;
-        for (String line : outputStream.toString().split("\\n")) {
-            if (line.contains("BUILD SUCCESS")) {
+        try {
+            invoker.setOutputHandler(null);
+            InvocationResult invocationResult = invoker.execute(request);
+            if (invocationResult.getExitCode() != 0) {
+                System.out.println("Failed to clean");
+            } else {
+                System.out.println("Successfully clean");
                 buildSuccess = true;
             }
+        } catch (MavenInvocationException e) {
+            System.out.println("Failed to clean");
         }
         return buildSuccess;
+    }
+
+    public long mvnSerialBuildTime(String path) {
+        InvocationRequest request = new DefaultInvocationRequest();
+        request.setPomFile(new File(path));
+        request.setGoals(Collections.singletonList("install -DskipTests=true -Dmaven.test.skip=true"));
+
+        Invoker invoker = new DefaultInvoker();
+        invoker.setMavenHome(new File(System.getenv("MAVEN_HOME")));
+        boolean buildSuccess = false;
+        long startTime = System.currentTimeMillis();
+        try {
+            invoker.setOutputHandler(null);
+            InvocationResult invocationResult = invoker.execute(request);
+            if (invocationResult.getExitCode() != 0) {
+                System.out.println("Failed to build");
+            } else {
+                System.out.println("Successfully build");
+                buildSuccess = true;
+            }
+        } catch (MavenInvocationException e) {
+            System.out.println("Exception : Failed to build");
+        }
+        long endTime = System.currentTimeMillis();
+        return buildSuccess ? (endTime - startTime) / 1000 : -1;
     }
 
     public List<String> removeDependency(Pom pom, List<String> removes) {
