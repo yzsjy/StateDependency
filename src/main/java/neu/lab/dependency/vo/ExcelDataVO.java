@@ -16,6 +16,9 @@ public class ExcelDataVO {
     private int unusefulNum;
     private int dupModuleNum;
     private int dupDepNum;
+    private String success;
+    private long beforeTime;
+    private long afterTime;
 
     public ExcelDataVO(String projName, int moduleNum, int depNum, int conflictNum, int inheritDepth, int conflictDepth) {
         this.projName = projName;
@@ -41,10 +44,37 @@ public class ExcelDataVO {
         this.dupDepNum = dupDepNum;
     }
 
-    public ExcelDataVO(String projName, int moduleNum, int reduceNum) {
+    public String getSuccess() {
+        return success;
+    }
+
+    public void setSuccess(String success) {
+        this.success = success;
+    }
+
+    public long getBeforeTime() {
+        return beforeTime;
+    }
+
+    public void setBeforeTime(long beforeTime) {
+        this.beforeTime = beforeTime;
+    }
+
+    public long getAfterTime() {
+        return afterTime;
+    }
+
+    public void setAfterTime(long afterTime) {
+        this.afterTime = afterTime;
+    }
+
+    public ExcelDataVO(String projName, int moduleNum, int reduceNum, String success, long beforeTime, long afterTime) {
         this.projName = projName;
         this.moduleNum = moduleNum;
         this.reduceNum = reduceNum;
+        this.success = success;
+        this.beforeTime = beforeTime;
+        this.afterTime = afterTime;
     }
 
     public String getProjName() {

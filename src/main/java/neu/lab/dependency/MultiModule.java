@@ -14,12 +14,10 @@ import java.util.Scanner;
  */
 public class MultiModule {
     public static void main(String[] args) {
-//        VersionCheck versionCheck = new VersionCheck(args[0]);
-//        versionCheck.init();
+        VersionCheck versionCheck = new VersionCheck(args[0]);
+        versionCheck.init();
 
 //        DetectDupDeclare detectDupDeclare = new DetectDupDeclare(args[0]);
 //        detectDupDeclare.init();
-
-        System.out.println(FileUtil.i().getAllPomFiles(args[0]));
     }
 }

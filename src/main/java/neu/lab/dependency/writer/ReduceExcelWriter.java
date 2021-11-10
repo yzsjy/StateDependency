@@ -18,6 +18,9 @@ public class ReduceExcelWriter {
         CELL_HEADS.add("Project");
         CELL_HEADS.add("Module Number");
         CELL_HEADS.add("Reduce Number");
+        CELL_HEADS.add("Build success/failed");
+        CELL_HEADS.add("Before Time");
+        CELL_HEADS.add("After Time");
 //        CELL_HEADS.add("Useful Number");
 //        CELL_HEADS.add("Unuseful Number");
     }
@@ -100,9 +103,11 @@ public class ReduceExcelWriter {
         cell.setCellValue(data.getModuleNum());
         cell = row.createCell(cellNum++);
         cell.setCellValue(data.getReduceNum());
-//        cell = row.createCell(cellNum++);
-//        cell.setCellValue(data.getUsefulNum());
-//        cell = row.createCell(cellNum++);
-//        cell.setCellValue(data.getUnusefulNum());
+        cell = row.createCell(cellNum++);
+        cell.setCellValue(data.getSuccess());
+        cell = row.createCell(cellNum++);
+        cell.setCellValue(data.getBeforeTime());
+        cell = row.createCell(cellNum++);
+        cell.setCellValue(data.getAfterTime());
     }
 }
