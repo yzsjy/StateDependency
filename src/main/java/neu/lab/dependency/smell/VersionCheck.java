@@ -1,15 +1,14 @@
-package neu.lab.dependency.pom;
+package neu.lab.dependency.smell;
 
-import neu.lab.dependency.RecoverPom;
 import neu.lab.dependency.container.Conflicts;
 import neu.lab.dependency.container.Poms;
+import neu.lab.dependency.pom.ModuleRelation;
+import neu.lab.dependency.pom.PomParser;
 import neu.lab.dependency.util.Conf;
-import neu.lab.dependency.util.PomOperation;
 import neu.lab.dependency.vo.Conflict;
 import neu.lab.dependency.vo.ExcelDataVO;
 import neu.lab.dependency.vo.Pom;
 import neu.lab.dependency.writer.ExcelWriter;
-import neu.lab.dependency.writer.ReduceExcelWriter;
 import org.apache.poi.ss.usermodel.Workbook;
 
 import java.io.*;
@@ -24,6 +23,7 @@ import java.util.Set;
 public class VersionCheck {
 
     private String projPath;
+    public static String separator = File.separator.equals("/") ? "/" : "\\\\";
 
     public VersionCheck(String projPath) {
         this.projPath = projPath;
@@ -32,9 +32,7 @@ public class VersionCheck {
     public void init() {
         PomParser.init(projPath);
         ModuleRelation.i().generateGraph();
-
-//        detectConflict();
-        reduceModule();
+        detectConflict();
     }
 
     public void detectConflict() {
@@ -47,33 +45,14 @@ public class VersionCheck {
         writeToExcelFile();
     }
 
-    public void reduceModule() {
-        String path = projPath + "pom.xml";
-        PomOperation.i().mvnClean(path);
-        long preTime = PomOperation.i().mvnSerialBuildTime(path);
-        PomOperation.i().mvnClean(path);
-        long beforeTime = 0;
-        long afterTime = 0;
-        String[] splits = projPath.split("/");
-        ModuleReduce.i().reduceDep();
-        ModuleReduce.i().relationReduce();
-        ModuleReduce.i().generateGraph(splits[splits.length - 1]);
-        afterTime = PomOperation.i().mvnParallelBuildTime(path);
-        RecoverPom rp = new RecoverPom(projPath);
-        rp.recoverPom();
-        PomOperation.i().mvnClean(path);
-        beforeTime = PomOperation.i().mvnParallelBuildTime(path);
-        writeReduceToExcelFile(preTime, beforeTime, afterTime);
-    }
-
 
     public void generateGraph() {
-        String[] splits = projPath.split("\\\\");
+        String[] splits = projPath.split(separator);
         Conflicts.i().generateGraphs(splits[splits.length - 1]);
     }
 
     public void printRisk() {
-        String[] splits = projPath.split("\\\\");
+        String[] splits = projPath.split(separator);
         String projName = splits[splits.length - 1];
         StringBuffer stringBuffer = new StringBuffer();
         stringBuffer.append(projPath + "\n\n");
@@ -102,7 +81,7 @@ public class VersionCheck {
                 file.createNewFile();
             }
             PrintWriter printer = new PrintWriter(new BufferedWriter(new FileWriter(file, true)));
-            printer.println(stringBuffer.toString());
+            printer.println(stringBuffer);
             printer.close();
         } catch (IOException e) {
             e.printStackTrace();
@@ -110,7 +89,7 @@ public class VersionCheck {
     }
 
     public void writeToExcelFile() {
-        String[] splits = projPath.split("\\\\");
+        String[] splits = projPath.split(separator);
         String projName = splits[splits.length - 1];
         int depNum = getDepNum();
         int conflictNum = Conflicts.i().getConflicts().size();
@@ -137,44 +116,6 @@ public class VersionCheck {
             try {
                 file.createNewFile();
                 Workbook workbook = ExcelWriter.exportData(data);
-                FileOutputStream fileOut = new FileOutputStream(filePath);
-                workbook.write(fileOut);
-                fileOut.flush();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    public void writeReduceToExcelFile(long preTime, long beforeTime, long afterTime) {
-        String[] splits = projPath.split("/");
-        String projName = splits[splits.length - 1];
-        int moduleNum = Poms.i().getModules().size();
-        int reduceNum = ModuleReduce.i().getReduceEdges().size();
-//        int usefulNum = ModuleReduce.i().getNotReduce().size();
-//        int unusefulNum = ModuleReduce.i().getCanReduce().size();
-        String success = preTime == -1 ? "failed" : "success";
-        ExcelDataVO data = new ExcelDataVO(projName, moduleNum, reduceNum, success, beforeTime, afterTime);
-//        ExcelDataVO data = new ExcelDataVO(projName, moduleNum, reduceNum, usefulNum, unusefulNum);
-        String filePath = Conf.Dir + "ReduceData.xlsx";
-        File file = new File(filePath);
-        if (file.exists()) {
-            try {
-                FileInputStream inputStream = new FileInputStream(file);
-                Workbook workbook = ReduceExcelWriter.getWorkBook(inputStream);
-                FileOutputStream outputStream = new FileOutputStream(file);
-                ReduceExcelWriter.insertData(data, workbook);
-                workbook.write(outputStream);
-                outputStream.flush();
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        } else {
-            try {
-                file.createNewFile();
-                Workbook workbook = ReduceExcelWriter.exportData(data);
                 FileOutputStream fileOut = new FileOutputStream(filePath);
                 workbook.write(fileOut);
                 fileOut.flush();
@@ -226,5 +167,4 @@ public class VersionCheck {
         }
         return depth;
     }
-
 }

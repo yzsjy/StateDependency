@@ -2,7 +2,6 @@ package neu.lab.dependency;
 
 import neu.lab.dependency.container.Conflicts;
 import neu.lab.dependency.container.Poms;
-import neu.lab.dependency.handler.PomFileIO;
 import neu.lab.dependency.pom.DetectUselessDep;
 import neu.lab.dependency.pom.ModuleReduce;
 import neu.lab.dependency.pom.ModuleRelation;
@@ -10,10 +9,9 @@ import neu.lab.dependency.pom.PomParser;
 import neu.lab.dependency.smell.DetectDupDeclare;
 import neu.lab.dependency.soot.SootRiskCg;
 import neu.lab.dependency.vo.Conflict;
-import neu.lab.dependency.vo.DepInfo;
 import neu.lab.dependency.vo.Pom;
-import org.apache.maven.model.Model;
 
+import java.io.File;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -22,15 +20,36 @@ import java.util.Set;
  * @author SUNJUNYAN
  */
 public class Test {
+
+    public static String separator = File.separator.equals("/") ? "/" : "\\\\";
+
     public static void main(String[] args) {
-        String projPath = "D:\\githubProject\\orientdb-3.1.14\\";
+        String projPath = "D:\\githubProjects\\dolphinscheduler\\";
         PomParser.init(projPath);
         ModuleRelation.i().generateGraph();
 
-        System.out.println(Poms.i().getPoms().size());
+        System.out.println("Module number : " + Poms.i().getPoms().size());
 
+//        String jarPath = "";
+//        String hostPath = "";
+//        getReachMethod(hostPath, jarPath);
+
+//        versionCheck(projPath);
+        buildOptimize(projPath);
+//        findUselessDep(projPath);
+//        detectDupDeclare(projPath);
+    }
+
+    public static void getReachMethod(String hostPath, String jarPath) {
+        Set<String> methods = SootRiskCg.i().cmpCg(hostPath, jarPath);
+        for (String method : methods) {
+            System.out.println(method);
+        }
+    }
+
+    public static void versionCheck(String projPath) {
         Conflicts.init();
-        String[] splits = projPath.split("\\\\");
+        String[] splits = projPath.split(separator);
         Conflicts.i().generateGraphs(splits[splits.length - 1]);
         List<Conflict> conflicts = Conflicts.i().getRealConflicts();
         for (Conflict conflict : conflicts) {
@@ -46,24 +65,23 @@ public class Test {
 //            System.out.println(conflict.getSig() + " safe version : " + conflict.getSafeVersion());
             System.out.println();
         }
+    }
 
+    public static void buildOptimize(String projPath) {
+        String[] splits = projPath.split(separator);
         ModuleReduce.i().reduceDep();
         ModuleReduce.i().relationReduce();
         ModuleReduce.i().generateGraph(splits[splits.length - 1]);
-
-//        DetectUselessDep.i().reduceDep();
-//        DetectUselessDep.i().generateGraph(splits[splits.length - 1]);
-
-//        DetectDupDeclare detectDupDeclare = new DetectDupDeclare(projPath);
-//        detectDupDeclare.init();
     }
 
-    public static void getReachMethod() {
-        String jarPath = "D:\\githubProjects\\incubator-nemo\\runtime\\common\\target\\classes";
-        String hostPath = "D:\\githubProjects\\incubator-nemo\\runtime\\executor\\target\\classes";
-        Set<String> methods = SootRiskCg.i().cmpCg(hostPath, jarPath);
-        for (String method : methods) {
-            System.out.println(method);
-        }
+    public static void findUselessDep(String projPath) {
+        String[] splits = projPath.split(separator);
+        DetectUselessDep.i().reduceDep();
+        DetectUselessDep.i().generateGraph(splits[splits.length - 1]);
+    }
+
+    public static void detectDupDeclare(String projPath) {
+        DetectDupDeclare detectDupDeclare = new DetectDupDeclare(projPath);
+        detectDupDeclare.init();
     }
 }

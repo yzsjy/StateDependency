@@ -1,23 +1,24 @@
 package neu.lab.dependency;
 
-import neu.lab.dependency.handler.PomFileIO;
-import neu.lab.dependency.pom.VersionCheck;
+import neu.lab.dependency.smell.BuildOptimize;
 import neu.lab.dependency.smell.DetectDupDeclare;
-import neu.lab.dependency.util.FileUtil;
-import neu.lab.dependency.writer.DupDeclareExcelWriter;
-import org.apache.maven.model.Model;
-
-import java.util.Scanner;
+import neu.lab.dependency.smell.VersionCheck;
 
 /**
  * @author SUNJUNYAN
  */
 public class MultiModule {
     public static void main(String[] args) {
-        VersionCheck versionCheck = new VersionCheck(args[0]);
-        versionCheck.init();
 
-//        DetectDupDeclare detectDupDeclare = new DetectDupDeclare(args[0]);
-//        detectDupDeclare.init();
+        if (args[0].equals("versionCheck")) {
+            VersionCheck versionCheck = new VersionCheck(args[1]);
+            versionCheck.init();
+        } else if (args[0].equals("buildOptimize")) {
+            BuildOptimize buildOptimize = new BuildOptimize(args[1]);
+            buildOptimize.init();
+        } else if (args[0].equals("detectDupDeclare")) {
+            DetectDupDeclare detectDupDeclare = new DetectDupDeclare(args[0]);
+            detectDupDeclare.init();
+        }
     }
 }

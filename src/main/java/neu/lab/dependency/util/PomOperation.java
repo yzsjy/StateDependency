@@ -1,10 +1,6 @@
 package neu.lab.dependency.util;
 
-import neu.lab.dependency.vo.DependencyInfo;
 import neu.lab.dependency.vo.Pom;
-import org.apache.commons.exec.CommandLine;
-import org.apache.commons.exec.DefaultExecutor;
-import org.apache.commons.exec.PumpStreamHandler;
 import org.apache.maven.shared.invoker.*;
 import org.dom4j.Document;
 import org.dom4j.Element;
@@ -12,9 +8,14 @@ import org.dom4j.io.OutputFormat;
 import org.dom4j.io.SAXReader;
 import org.dom4j.io.XMLWriter;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.nio.file.Files;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * The operation of pom file
@@ -22,8 +23,6 @@ import java.util.*;
  */
 
 public class PomOperation {
-
-    private Set<String> dependencyInPom;
 
     private static PomOperation instance;
 
@@ -64,7 +63,33 @@ public class PomOperation {
     public long mvnParallelBuildTime(String path) {
         InvocationRequest request = new DefaultInvocationRequest();
         request.setPomFile(new File(path));
-        request.setGoals(Collections.singletonList("install -DskipTests=true -Dmaven.test.skip=true"));
+        request.setGoals(Collections.singletonList("-T 1C install -DskipTests=true -Dmaven.test.skip=true"));
+
+        Invoker invoker = new DefaultInvoker();
+        invoker.setMavenHome(new File(System.getenv("MAVEN_HOME")));
+        boolean buildSuccess = false;
+        long startTime = System.currentTimeMillis();
+        try {
+            invoker.setOutputHandler(null);
+            InvocationResult invocationResult = invoker.execute(request);
+            if (invocationResult.getExitCode() != 0) {
+                System.out.println("Failed to build");
+            } else {
+                System.out.println("Successfully build");
+                buildSuccess = true;
+            }
+        } catch (MavenInvocationException e) {
+            System.out.println("Exception : Failed to build");
+            e.printStackTrace();
+        }
+        long endTime = System.currentTimeMillis();
+        return buildSuccess ? (endTime - startTime) / 1000 : -1;
+    }
+
+    public long mvnParallelBuildTime(String path, int core) {
+        InvocationRequest request = new DefaultInvocationRequest();
+        request.setPomFile(new File(path));
+        request.setGoals(Collections.singletonList("-T " + core + " install -DskipTests=true -Dmaven.test.skip=true"));
 
         Invoker invoker = new DefaultInvoker();
         invoker.setMavenHome(new File(System.getenv("MAVEN_HOME")));
@@ -88,7 +113,6 @@ public class PomOperation {
 
     public boolean mvnClean(String path) {
         InvocationRequest request = new DefaultInvocationRequest();
-        System.out.println(path);
         request.setPomFile(new File(path));
         request.setGoals(Collections.singletonList("clean"));
 
@@ -106,6 +130,7 @@ public class PomOperation {
             }
         } catch (MavenInvocationException e) {
             System.out.println("Failed to clean");
+            e.printStackTrace();
         }
         return buildSuccess;
     }
@@ -130,6 +155,7 @@ public class PomOperation {
             }
         } catch (MavenInvocationException e) {
             System.out.println("Exception : Failed to build");
+            e.printStackTrace();
         }
         long endTime = System.currentTimeMillis();
         return buildSuccess ? (endTime - startTime) / 1000 : -1;
