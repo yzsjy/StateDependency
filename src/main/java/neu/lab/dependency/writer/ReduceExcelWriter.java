@@ -104,7 +104,7 @@ public class ReduceExcelWriter {
         cell = row.createCell(cellNum++);
         cell.setCellValue(data.getReduceNum());
         cell = row.createCell(cellNum++);
-        cell.setCellValue(data.getSuccess());
+        cell.setCellValue(data.getSerialTime());
         cell = row.createCell(cellNum++);
         cell.setCellValue(data.getBeforeTime());
         cell = row.createCell(cellNum++);

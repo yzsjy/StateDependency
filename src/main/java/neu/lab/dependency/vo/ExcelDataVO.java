@@ -16,7 +16,7 @@ public class ExcelDataVO {
     private int unusefulNum;
     private int dupModuleNum;
     private int dupDepNum;
-    private String success;
+    private long serialTime;
     private long beforeTime;
     private long afterTime;
 
@@ -27,6 +27,15 @@ public class ExcelDataVO {
         this.conflictNum = conflictNum;
         this.inheritDepth = inheritDepth;
         this.conflictDepth = conflictDepth;
+    }
+
+    public ExcelDataVO(String projName, int moduleNum, int reduceNum, long serialTime, long beforeTime, long afterTime) {
+        this.projName = projName;
+        this.moduleNum = moduleNum;
+        this.reduceNum = reduceNum;
+        this.serialTime = serialTime;
+        this.beforeTime = beforeTime;
+        this.afterTime = afterTime;
     }
 
     public ExcelDataVO(String projName, int moduleNum, int reduceNum, int usefulNum, int unusefulNum) {
@@ -44,85 +53,28 @@ public class ExcelDataVO {
         this.dupDepNum = dupDepNum;
     }
 
-    public String getSuccess() {
-        return success;
-    }
-
-    public void setSuccess(String success) {
-        this.success = success;
-    }
-
-    public long getBeforeTime() {
-        return beforeTime;
-    }
-
-    public void setBeforeTime(long beforeTime) {
-        this.beforeTime = beforeTime;
-    }
-
-    public long getAfterTime() {
-        return afterTime;
-    }
-
-    public void setAfterTime(long afterTime) {
-        this.afterTime = afterTime;
-    }
-
-    public ExcelDataVO(String projName, int moduleNum, int reduceNum, String success, long beforeTime, long afterTime) {
-        this.projName = projName;
-        this.moduleNum = moduleNum;
-        this.reduceNum = reduceNum;
-        this.success = success;
-        this.beforeTime = beforeTime;
-        this.afterTime = afterTime;
-    }
-
     public String getProjName() {
         return projName;
-    }
-
-    public void setProjName(String projName) {
-        this.projName = projName;
     }
 
     public int getModuleNum() {
         return moduleNum;
     }
 
-    public void setModuleNum(int moduleNum) {
-        this.moduleNum = moduleNum;
-    }
-
     public int getDepNum() {
         return depNum;
-    }
-
-    public void setDepNum(int depNum) {
-        this.depNum = depNum;
     }
 
     public int getConflictNum() {
         return conflictNum;
     }
 
-    public void setConflictNum(int conflictNum) {
-        this.conflictNum = conflictNum;
-    }
-
     public int getInheritDepth() {
         return inheritDepth;
     }
 
-    public void setInheritDepth(int inheritDepth) {
-        this.inheritDepth = inheritDepth;
-    }
-
     public int getConflictDepth() {
         return conflictDepth;
-    }
-
-    public void setConflictDepth(int conflictDepth) {
-        this.conflictDepth = conflictDepth;
     }
 
     public int getReduceNum() {
@@ -145,8 +97,16 @@ public class ExcelDataVO {
         return dupDepNum;
     }
 
-    public void setReduceNum(int reduceNum) {
-        this.reduceNum = reduceNum;
+    public long getSerialTime() {
+        return serialTime;
+    }
+
+    public long getBeforeTime() {
+        return beforeTime;
+    }
+
+    public long getAfterTime() {
+        return afterTime;
     }
 
     @Override

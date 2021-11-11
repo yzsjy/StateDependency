@@ -47,13 +47,12 @@ public class BuildOptimize {
         writeReduceToExcelFile(preTime, beforeTime, afterTime);
     }
 
-    public void writeReduceToExcelFile(long preTime, long beforeTime, long afterTime) {
+    public void writeReduceToExcelFile(long serialTime, long beforeTime, long afterTime) {
         String[] splits = projPath.split(separator);
         String projName = splits[splits.length - 1];
         int moduleNum = Poms.i().getModules().size();
-        int reduceNum = ModuleReduce.i().getReduceEdges().size();
-        String success = preTime == -1 ? "failed" : "success";
-        ExcelDataVO data = new ExcelDataVO(projName, moduleNum, reduceNum, success, beforeTime, afterTime);
+        int reduceNum = ModuleReduce.i().getReduceEdges().size();;
+        ExcelDataVO data = new ExcelDataVO(projName, moduleNum, reduceNum, serialTime, beforeTime, afterTime);
         String filePath = Conf.Dir + "ReduceData.xlsx";
         File file = new File(filePath);
         if (file.exists()) {
