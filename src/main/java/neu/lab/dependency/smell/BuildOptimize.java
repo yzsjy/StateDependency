@@ -39,11 +39,11 @@ public class BuildOptimize {
         ModuleReduce.i().reduceDep();
         ModuleReduce.i().relationReduce();
         ModuleReduce.i().generateGraph(splits[splits.length - 1]);
-        afterTime = PomOperation.i().mvnParallelBuildTime(path);
+        afterTime = PomOperation.i().mvnParallelBuildTime(path, 4);
         RecoverPom rp = new RecoverPom(projPath);
         rp.recoverPom();
         PomOperation.i().mvnClean(path);
-        beforeTime = PomOperation.i().mvnParallelBuildTime(path);
+        beforeTime = PomOperation.i().mvnParallelBuildTime(path, 4);
         writeReduceToExcelFile(preTime, beforeTime, afterTime);
     }
 
