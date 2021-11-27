@@ -63,7 +63,7 @@ public class PomOperation {
     public long mvnParallelBuildTime(String path) {
         InvocationRequest request = new DefaultInvocationRequest();
         request.setPomFile(new File(path));
-        request.setGoals(Collections.singletonList("-T 1C install -DskipTests=true -Dmaven.test.skip=true"));
+        request.setGoals(Collections.singletonList("-T 1C install -Dmaven.test.skip=true -Dmaven.javadoc.skip=true"));
 
         Invoker invoker = new DefaultInvoker();
         invoker.setMavenHome(new File(System.getenv("MAVEN_HOME")));
@@ -89,7 +89,7 @@ public class PomOperation {
     public long mvnParallelBuildTime(String path, int core) {
         InvocationRequest request = new DefaultInvocationRequest();
         request.setPomFile(new File(path));
-        request.setGoals(Collections.singletonList("-T " + core + " install -DskipTests=true -Dmaven.test.skip=true"));
+        request.setGoals(Collections.singletonList("-T " + core + " install -Dmaven.test.skip=true -Dmaven.javadoc.skip=true"));
 
         Invoker invoker = new DefaultInvoker();
         invoker.setMavenHome(new File(System.getenv("MAVEN_HOME")));
@@ -138,7 +138,7 @@ public class PomOperation {
     public long mvnSerialBuildTime(String path) {
         InvocationRequest request = new DefaultInvocationRequest();
         request.setPomFile(new File(path));
-        request.setGoals(Collections.singletonList("install -DskipTests=true -Dmaven.test.skip=true"));
+        request.setGoals(Collections.singletonList("install -Dmaven.test.skip=true -Dmaven.javadoc.skip=true"));
 
         Invoker invoker = new DefaultInvoker();
         invoker.setMavenHome(new File(System.getenv("MAVEN_HOME")));

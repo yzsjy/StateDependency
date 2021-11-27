@@ -24,9 +24,11 @@ public class Test {
     public static String separator = File.separator.equals("/") ? "/" : "\\\\";
 
     public static void main(String[] args) {
-        String projPath = "D:\\githubProjects\\dolphinscheduler\\";
+        String projPath = "E:\\unzip1\\onebusaway-application-modules-master\\";
         PomParser.init(projPath);
         ModuleRelation.i().generateGraph();
+
+
 
         System.out.println("Module number : " + Poms.i().getPoms().size());
 
@@ -35,8 +37,9 @@ public class Test {
 //        getReachMethod(hostPath, jarPath);
 
 //        versionCheck(projPath);
-        buildOptimize(projPath);
-//        findUselessDep(projPath);
+//        buildOptimize(projPath);
+        buildGraph(projPath);
+        findUselessDep(projPath);
 //        detectDupDeclare(projPath);
     }
 
@@ -74,9 +77,16 @@ public class Test {
         ModuleReduce.i().generateGraph(splits[splits.length - 1]);
     }
 
+    public static void buildGraph(String projPath) {
+        String[] splits = projPath.split(separator);
+        ModuleReduce.i().reduceDep();
+        ModuleReduce.i().generateGraph(splits[splits.length - 1]);
+    }
+
     public static void findUselessDep(String projPath) {
         String[] splits = projPath.split(separator);
         DetectUselessDep.i().reduceDep();
+        DetectUselessDep.i().relationReduce();
         DetectUselessDep.i().generateGraph(splits[splits.length - 1]);
     }
 

@@ -51,7 +51,7 @@ public class BuildOptimize {
         String[] splits = projPath.split(separator);
         String projName = splits[splits.length - 1];
         int moduleNum = Poms.i().getModules().size();
-        int reduceNum = ModuleReduce.i().getReduceEdges().size();;
+        int reduceNum = ModuleReduce.i().getReduceEdges().size();
         ExcelDataVO data = new ExcelDataVO(projName, moduleNum, reduceNum, serialTime, beforeTime, afterTime);
         String filePath = Conf.Dir + "ReduceData.xlsx";
         File file = new File(filePath);

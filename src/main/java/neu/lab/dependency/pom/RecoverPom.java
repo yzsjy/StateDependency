@@ -64,7 +64,7 @@ public class RecoverPom {
     }
 
     public static void main(String[] args) {
-        String path = "";
+        String path = "E:\\unzip1\\onebusaway-application-modules-master\\";
         recoverPom(path);
     }
 }

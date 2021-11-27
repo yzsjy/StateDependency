@@ -2,6 +2,7 @@ package neu.lab.dependency;
 
 import neu.lab.dependency.smell.BuildOptimize;
 import neu.lab.dependency.smell.DetectDupDeclare;
+import neu.lab.dependency.smell.UselessDep;
 import neu.lab.dependency.smell.VersionCheck;
 
 /**
@@ -17,8 +18,11 @@ public class MultiModule {
             BuildOptimize buildOptimize = new BuildOptimize(args[1]);
             buildOptimize.init();
         } else if (args[0].equals("detectDupDeclare")) {
-            DetectDupDeclare detectDupDeclare = new DetectDupDeclare(args[0]);
+            DetectDupDeclare detectDupDeclare = new DetectDupDeclare(args[1]);
             detectDupDeclare.init();
+        } else if (args[0].equals("uselessDep")) {
+            UselessDep uselessDep = new UselessDep(args[1]);
+            uselessDep.init();
         }
     }
 }

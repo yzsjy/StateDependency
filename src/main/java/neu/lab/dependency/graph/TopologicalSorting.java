@@ -1,5 +1,8 @@
 package neu.lab.dependency.graph;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * 逆拓扑排序
  *
@@ -28,6 +31,11 @@ public class TopologicalSorting {
         return getSourceSort(matrix, source);
     }
 
+    public List<List<Integer>> getLevelSort(int[][] matrix) {
+        int[] source = getSource(matrix);
+        return getLevelSort(matrix, source);
+    }
+
     /**
      * 返回有向图的逆拓扑排序
      * @param matrix 图的邻接矩阵表示
@@ -51,6 +59,35 @@ public class TopologicalSorting {
                     }
                 }
             }
+            if (count == size) {
+                judge = false;
+            }
+        }
+        return res;
+    }
+
+    public List<List<Integer>> getLevelSort(int[][] matrix, int[] source) {
+        int size = source.length;
+        List<List<Integer>> res = new ArrayList<>();
+        int count = 0;
+        boolean judge = true;
+        while (judge) {
+            List<Integer> level = new ArrayList<>();
+            for (int i = 0; i < size; i++) {
+                if (source[i] == 0) {
+                    count++;
+                    level.add(i);
+                    source[i] = -1;
+                }
+            }
+            for (int j = 0; j < size; j++) {
+                for (int i : level) {
+                    if (matrix[j][i] == 1) {
+                        source[j] -= 1;
+                    }
+                }
+            }
+            res.add(level);
             if (count == size) {
                 judge = false;
             }

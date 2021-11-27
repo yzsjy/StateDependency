@@ -127,9 +127,9 @@ public class GenerateGraphviz {
         Node[] nodes = new Node[size];
         for (Map.Entry<Pom, Integer> entry : pomIndexes.entrySet()) {
             if (entry.getKey().getName() != null) {
-                nodes[entry.getValue()] = node(entry.getKey().getName());
+                nodes[entry.getValue()] = node(entry.getKey().getArtifactId());
             } else {
-                nodes[entry.getValue()] = node(entry.getKey().getSig());
+                nodes[entry.getValue()] = node(entry.getKey().getArtifactId());
             }
 
         }
@@ -140,8 +140,9 @@ public class GenerateGraphviz {
                 if (map[i][j] == 1) {
                     links.add(to(nodes[j]));
                 } else if (map[i][j] == 2) {
-                    links.add(to(nodes[j]).with(Color.RED));
-                } else if (map[i][j] == 3) {
+                    links.add(to(nodes[j]).with(Color.RED).with(Style.DOTTED));
+                }
+                else if (map[i][j] == 3) {
                     links.add(to(nodes[j]).with(Color.BLUE).with(Style.DOTTED));
                 }
             }
