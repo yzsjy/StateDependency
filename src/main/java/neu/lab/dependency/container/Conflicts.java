@@ -2,7 +2,6 @@ package neu.lab.dependency.container;
 
 import neu.lab.dependency.graph.GenerateGraphviz;
 import neu.lab.dependency.pom.ModuleRelation;
-import neu.lab.dependency.pom.PomParser;
 import neu.lab.dependency.vo.Conflict;
 import neu.lab.dependency.vo.Pom;
 
@@ -18,8 +17,8 @@ public class Conflicts {
     private Set<String> leaves = new HashSet<>();
     private int[][] modules;
     private int[][] inheritance;
-    private Map<String, Integer> indexes;
-    private Map<Integer, String> revertIndexes;
+    private Map<String, Integer> sigToIndex;
+    private Map<Integer, String> indexToSig;
 
     private static Conflicts instance;
 
@@ -38,8 +37,8 @@ public class Conflicts {
         container = new ArrayList<>();
         modules = ModuleRelation.i().getModules();
         inheritance = ModuleRelation.i().getInheritance();
-        indexes = ModuleRelation.i().getIndexes();
-        revertIndexes = ModuleRelation.i().revertIndexes();
+        sigToIndex = ModuleRelation.i().getSigToIndex();
+        indexToSig = ModuleRelation.i().getIndexToSig();
         detectConflicts();
     }
 
@@ -112,7 +111,7 @@ public class Conflicts {
 //                }
 //            }
 //            if (isLeaf) {
-//                leaves.add(revertIndexes.get(i));
+//                leaves.add(sigToIndex.get(i));
 //            }
 //        }
 
@@ -125,7 +124,7 @@ public class Conflicts {
         for (Pom pom : Poms.i().getPoms()) {
             String name = pom.getSig();
             if (leaves.contains(name)) {
-                if (isSingle(indexes.get(pom.getSig()))) {
+                if (isSingle(sigToIndex.get(pom.getSig()))) {
                     continue;
                 }
                 poms.add(pom);
@@ -155,8 +154,8 @@ public class Conflicts {
 
     public void generateGraphs(String projName) {
         Set<String> conflictModules = getConflictModules();
-        GenerateGraphviz.i().inheritGraph(inheritance, indexes, conflictModules, projName);
-        GenerateGraphviz.i().moduleGraph(modules, indexes, conflictModules, projName, "dependencies");
+        GenerateGraphviz.i().inheritGraph(inheritance, sigToIndex, conflictModules, projName);
+        GenerateGraphviz.i().moduleGraph(modules, sigToIndex, conflictModules, projName, "dependencies");
     }
 
     public List<Conflict> getRealConflicts() {
@@ -180,9 +179,9 @@ public class Conflicts {
             moduleNames.addAll(conflict.getModuleNames());
             moduleNames.removeAll(names);
             for (String name : names) {
-                List<Integer> visited = getReachModules(indexes.get(name));
+                List<Integer> visited = getReachModules(sigToIndex.get(name));
                 for (int i : visited) {
-                    if (moduleNames.contains(revertIndexes.get(i))) {
+                    if (moduleNames.contains(indexToSig.get(i))) {
                         return true;
                     }
                 }

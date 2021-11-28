@@ -349,10 +349,20 @@ public class Poms {
         return target;
     }
 
-    public Pom getPom(String sig) {
+    public Pom getPomBySig(String sig) {
         Pom target = null;
         for (Pom pom : container) {
             if (pom.getSig().equals(sig)) {
+                target = pom;
+            }
+        }
+        return target;
+    }
+
+    public Pom getPomByArtifactId(String artifactId) {
+        Pom target = null;
+        for (Pom pom : container) {
+            if (pom.getArtifactId().equals(artifactId)) {
                 target = pom;
             }
         }

@@ -6,7 +6,6 @@ import neu.lab.dependency.graph.TransitiveReduce;
 import neu.lab.dependency.soot.SootRiskCg;
 import neu.lab.dependency.util.PomOperation;
 import neu.lab.dependency.vo.Pom;
-import org.apache.maven.model.Model;
 
 import java.io.File;
 import java.util.*;
@@ -16,9 +15,9 @@ public class ModuleReduce {
     private static ModuleReduce instance;
 
     private int[][] temp;
-    private Map<String, Integer> indexes;
-    private Map<Integer, String> revertIndexes;
-    private Map<Pom, Integer> pomIndexes;
+    private Map<String, Integer> sigToIndex;
+    private Map<Integer, String> indexToSig;
+    private Map<Pom, Integer> pomToIndex;
     private Set<Integer> visit;
     private List<List<Integer>> reduceEdges;
     private List<List<Integer>> canReduce;
@@ -37,9 +36,9 @@ public class ModuleReduce {
 
     public void init() {
         int[][] modules = ModuleRelation.i().getModules();
-        indexes = ModuleRelation.i().getIndexes();
-        pomIndexes = ModuleRelation.i().getPomIndexes();
-        revertIndexes = ModuleRelation.i().revertIndexes();
+        sigToIndex = ModuleRelation.i().getSigToIndex();
+        pomToIndex = ModuleRelation.i().getPomToIndex();
+        indexToSig = ModuleRelation.i().getIndexToSig();
         visit = new HashSet<>();
         reduceEdges = new ArrayList<>();
         canReduce = new ArrayList<>();
@@ -158,15 +157,15 @@ public class ModuleReduce {
     }
 
     public void generateGraph(String projName) {
-        GenerateGraphviz.i().reduceGraph(temp, indexes, pomIndexes, projName, "reduceModule");
+        GenerateGraphviz.i().reduceGraph(temp, sigToIndex, pomToIndex, projName, "reduceModule");
     }
 
     public void canReduce() {
         for (List<Integer> list : reduceEdges) {
             int start = list.get(0);
             int end = list.get(1);
-            Pom startPom = Poms.i().getPom(revertIndexes.get(start));
-            Pom endPom = Poms.i().getPom(revertIndexes.get(end));
+            Pom startPom = Poms.i().getPomBySig(indexToSig.get(start));
+            Pom endPom = Poms.i().getPomBySig(indexToSig.get(end));
             String startPath = startPom.getFilePath();
             String endPath = endPom.getFilePath();
             startPath = startPath.substring(0, startPath.length() - 7) + "target" + File.separator + "classes";
@@ -187,12 +186,12 @@ public class ModuleReduce {
     public void relationReduce() {
 
         for (int i = 0; i < temp.length; i++) {
-            Pom startModule = Poms.i().getPom(revertIndexes.get(i));
+            Pom startModule = Poms.i().getPomBySig(indexToSig.get(i));
             List<String> removes = new ArrayList<>();
             Map<String, Integer> tmpIndex = new HashMap<>();
             for (int j = 0; j < temp.length; j++) {
                 if (temp[i][j] == 2) {
-                    Pom endModule = Poms.i().getPom(revertIndexes.get(j));
+                    Pom endModule = Poms.i().getPomBySig(indexToSig.get(j));
                     String groupId = endModule.getGroupId();
                     String artifactId = endModule.getArtifactId();
                     removes.add(groupId + ":" + artifactId);

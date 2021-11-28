@@ -15,9 +15,9 @@ public class DetectUselessDep {
 
     private int[][] modules;
     private int[][] temp;
-    private Map<String, Integer> indexes;
-    private Map<Integer, String> revertIndexes;
-    private Map<Pom, Integer> pomIndexes;
+    private Map<String, Integer> sigToIndex;
+    private Map<Integer, String> indexToSig;
+    private Map<Pom, Integer> pomToIndex;
     private Set<Integer> visit;
     private List<List<Integer>> reduceEdges;
     private List<List<Integer>> canReduce;
@@ -36,9 +36,9 @@ public class DetectUselessDep {
 
     public void init() {
         modules = ModuleRelation.i().getModules();
-        indexes = ModuleRelation.i().getIndexes();
-        pomIndexes = ModuleRelation.i().getPomIndexes();
-        revertIndexes = ModuleRelation.i().revertIndexes();
+        sigToIndex = ModuleRelation.i().getSigToIndex();
+        pomToIndex = ModuleRelation.i().getPomToIndex();
+        indexToSig = ModuleRelation.i().getIndexToSig();
         visit = new HashSet<>();
         reduceEdges = new ArrayList<>();
         canReduce = new ArrayList<>();
@@ -66,8 +66,8 @@ public class DetectUselessDep {
         for (int i = 0; i < temp.length; i++) {
             for (int j = 0; j < temp.length; j++) {
                 if (temp[i][j] == 1) {
-                    Pom startPom = Poms.i().getPom(revertIndexes.get(i));
-                    Pom endPom = Poms.i().getPom(revertIndexes.get(j));
+                    Pom startPom = Poms.i().getPomBySig(indexToSig.get(i));
+                    Pom endPom = Poms.i().getPomBySig(indexToSig.get(j));
                     String startPath = startPom.getFilePath();
                     String endPath = endPom.getFilePath();
                     startPath = startPath.substring(0, startPath.length() - 7) + "target" + File.separator + "classes";
@@ -88,12 +88,12 @@ public class DetectUselessDep {
     public void relationReduce() {
 
         for (int i = 0; i < temp.length; i++) {
-            Pom startModule = Poms.i().getPom(revertIndexes.get(i));
+            Pom startModule = Poms.i().getPomBySig(indexToSig.get(i));
             List<String> removes = new ArrayList<>();
             Map<String, Integer> tmpIndex = new HashMap<>();
             for (int j = 0; j < temp.length; j++) {
                 if (temp[i][j] == 3) {
-                    Pom endModule = Poms.i().getPom(revertIndexes.get(j));
+                    Pom endModule = Poms.i().getPomBySig(indexToSig.get(j));
                     String groupId = endModule.getGroupId();
                     String artifactId = endModule.getArtifactId();
                     removes.add(groupId + ":" + artifactId);
@@ -119,7 +119,7 @@ public class DetectUselessDep {
     }
 
     public void generateGraph(String projName) {
-        GenerateGraphviz.i().reduceGraph(temp, indexes, pomIndexes, projName, "uselessModule");
+        GenerateGraphviz.i().reduceGraph(temp, sigToIndex, pomToIndex, projName, "uselessModule");
     }
 
 }

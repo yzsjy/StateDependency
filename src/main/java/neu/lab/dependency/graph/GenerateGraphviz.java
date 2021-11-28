@@ -44,14 +44,14 @@ public class GenerateGraphviz {
     /**
      * 模块继承关系图生成
      * @param map 继承关系图矩阵
-     * @param indexes 模块名与坐标名的对应
+     * @param sigToIndex 模块名与坐标名的对应
      * @param conflicts 出现不一致依赖的模块
      * @param projName 项目名称
      */
-    public void inheritGraph(int[][] map, Map<String, Integer> indexes, Set<String> conflicts, String projName) {
-        int size = indexes.size();
+    public void inheritGraph(int[][] map, Map<String, Integer> sigToIndex, Set<String> conflicts, String projName) {
+        int size = sigToIndex.size();
         Node[] nodes = new Node[size];
-        for (Map.Entry<String, Integer> entry : indexes.entrySet()) {
+        for (Map.Entry<String, Integer> entry : sigToIndex.entrySet()) {
             if (conflicts.contains(entry.getKey())) {
                 nodes[entry.getValue()] = node(entry.getKey()).with(Color.RED.font());
             } else {
@@ -80,15 +80,15 @@ public class GenerateGraphviz {
     /**
      * 模块依赖关系图生成
      * @param map 模块依赖关系图矩阵
-     * @param indexes 模块名与坐标名的对应
+     * @param sigToIndex 模块名与坐标名的对应
      * @param conflicts 出现不一致依赖的模块
      * @param projName 项目名称
      * @param fileName 生成的文件名
      */
-    public void moduleGraph(int[][] map, Map<String, Integer> indexes, Set<String> conflicts, String projName, String fileName) {
-        int size = indexes.size();
+    public void moduleGraph(int[][] map, Map<String, Integer> sigToIndex, Set<String> conflicts, String projName, String fileName) {
+        int size = sigToIndex.size();
         Node[] nodes = new Node[size];
-        for (Map.Entry<String, Integer> entry : indexes.entrySet()) {
+        for (Map.Entry<String, Integer> entry : sigToIndex.entrySet()) {
             if (conflicts.contains(entry.getKey())) {
                 nodes[entry.getValue()] = node(entry.getKey()).with(Color.RED.font());
             } else {
@@ -117,15 +117,15 @@ public class GenerateGraphviz {
     /**
      * 模块依赖关系图生成
      * @param map 模块依赖关系图矩阵
-     * @param indexes 模块名与坐标名的对应
-     * @param pomIndexes 坐标名和模块别名的对应
+     * @param sigToIndex 模块名与坐标名的对应
+     * @param pomToIndex 坐标名和模块别名的对应
      * @param projName 项目名称
      * @param fileName 生成的文件名
      */
-    public void reduceGraph(int[][] map, Map<String, Integer> indexes, Map<Pom, Integer> pomIndexes, String projName, String fileName) {
-        int size = indexes.size();
+    public void reduceGraph(int[][] map, Map<String, Integer> sigToIndex, Map<Pom, Integer> pomToIndex, String projName, String fileName) {
+        int size = sigToIndex.size();
         Node[] nodes = new Node[size];
-        for (Map.Entry<Pom, Integer> entry : pomIndexes.entrySet()) {
+        for (Map.Entry<Pom, Integer> entry : pomToIndex.entrySet()) {
             if (entry.getKey().getName() != null) {
                 nodes[entry.getValue()] = node(entry.getKey().getArtifactId());
             } else {

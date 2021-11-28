@@ -3,7 +3,6 @@ package neu.lab.dependency.pom;
 import neu.lab.dependency.container.Poms;
 import neu.lab.dependency.graph.TopologicalSorting;
 import neu.lab.dependency.vo.Pom;
-import org.apache.maven.model.Model;
 
 import java.util.*;
 
@@ -18,15 +17,17 @@ public class BuildOrder {
 
     public BuildOrder(String projPath) {
         this.projPath = projPath;
+        init();
     }
 
     public void init() {
         copyMatrix();
         indexes = new HashMap<>();
-        indexes.putAll(ModuleRelation.i().getIndexes());
+        indexes.putAll(ModuleRelation.i().getSigToIndex());
         levelSort = new ArrayList<>();
         levelSort.addAll(TopologicalSorting.i().getLevelSort(matrix));
         moduleSort = new ArrayList<>();
+        getModuleSort();
     }
 
     public void copyMatrix() {
@@ -40,8 +41,7 @@ public class BuildOrder {
         }
     }
 
-    public List<Integer> getModuleSort() {
-        List<Integer> res = new ArrayList<>();
+    public void getModuleSort() {
         Set<Pom> poms = Poms.i().getPoms();
         Pom parent = null;
         String parentPath = projPath + "pom.xml";
@@ -51,24 +51,36 @@ public class BuildOrder {
                 break;
             }
         }
-        res.add(indexes.get(parent.getSig()));
-        Queue<String> queue = new LinkedList<>();
-        Model parentModel = parent.getModel();
-        List modules = parentModel.getModules();
-        for (Object s : modules) {
-            queue.offer((String) s);
-        }
-        return res;
+        DFSModuleSort(parent);
     }
 
-    public int getNumber(Set<Pom> poms, String artifactId) {
-        int num = 0;
-        for (Pom pom : poms) {
-            if (pom.getArtifactId().equals(artifactId)) {
-                num = indexes.get(pom.getSig());
-                break;
+    public void DFSModuleSort(Pom pom) {
+        moduleSort.add(indexes.get(pom.getSig()));
+        List modules = pom.getModel().getModules();
+        if (modules != null && !modules.isEmpty()) {
+            for (Object l : modules) {
+                String artifactId = (String) l;
+                Pom child = Poms.i().getPomByArtifactId(artifactId);
+                DFSModuleSort(child);
             }
         }
-        return num;
     }
+
+    public void calculateBuildList() {
+        for (List<Integer> levelSort : levelSort) {
+            int[] num = new int[levelSort.size()];
+            for (int i = 0; i < levelSort.size(); i++) {
+                num[i] = moduleSort.indexOf(levelSort.get(i));
+            }
+            Arrays.sort(num);
+            for (int i = 0; i < num.length; i++) {
+                buildList.add(moduleSort.get(num[i]));
+            }
+        }
+    }
+
+    public List<Integer> getBuildList() {
+        return buildList;
+    }
+
 }

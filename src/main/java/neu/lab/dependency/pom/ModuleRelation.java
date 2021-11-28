@@ -15,8 +15,10 @@ public class ModuleRelation {
 
     private int[][] modules;
     private int[][] inheritance;
-    private Map<String, Integer> indexes;
-    private Map<Pom, Integer> pomIndexes;
+    private Map<String, Integer> sigToIndex;
+    private Map<Pom, Integer> pomToIndex;
+    private Map<Integer, String> indexToSig;
+    private Map<Integer, Pom> indexToPom;
 
     private static ModuleRelation instance;
 
@@ -31,24 +33,28 @@ public class ModuleRelation {
         return modules;
     }
 
-    public Map<String, Integer> getIndexes() {
-        return indexes;
+    public Map<String, Integer> getSigToIndex() {
+        return sigToIndex;
     }
 
     public int[][] getInheritance() {
         return inheritance;
     }
 
-    public Map<Pom, Integer> getPomIndexes() {
-        return pomIndexes;
+    public Map<Pom, Integer> getPomToIndex() {
+        return pomToIndex;
     }
 
-    public Map<Integer, String> revertIndexes() {
-        Map<Integer, String> revertIndexes = new HashMap<>(indexes.size());
-        for (Map.Entry<String, Integer> entry : indexes.entrySet()) {
-            revertIndexes.put(entry.getValue(), entry.getKey());
-        }
-        return revertIndexes;
+    public Map<Integer, String> getIndexToSig() {
+        return indexToSig;
+    }
+
+    public Map<Integer, Pom> getIndexToPom() {
+        return indexToPom;
+    }
+
+    public static ModuleRelation getInstance() {
+        return instance;
     }
 
     public void generateGraph() {
@@ -56,25 +62,29 @@ public class ModuleRelation {
         int size = poms.size();
         modules = new int[size][size];
         inheritance = new int[size][size];
-        indexes = new HashMap<>(size);
-        pomIndexes = new HashMap<>(size);
+        sigToIndex = new HashMap<>(size);
+        pomToIndex = new HashMap<>(size);
+        indexToSig = new HashMap<>(size);
+        indexToPom = new HashMap<>(size);
         int i = 0;
         for (Pom pom : poms) {
-            indexes.put(pom.getSig(), i);
-            pomIndexes.put(pom, i);
+            sigToIndex.put(pom.getSig(), i);
+            pomToIndex.put(pom, i);
+            indexToSig.put(i, pom.getSig());
+            indexToPom.put(i, pom);
             i++;
         }
         for (Pom pom : poms) {
-            int m = indexes.get(pom.getSig());
+            int m = sigToIndex.get(pom.getSig());
             List<String> dependencies = pom.getDependencies();
             for (String dep : dependencies) {
-                if (indexes.containsKey(dep)) {
-                    int n = indexes.get(dep);
+                if (sigToIndex.containsKey(dep)) {
+                    int n = sigToIndex.get(dep);
                     modules[m][n] = 1;
                 }
             }
             if (pom.getParent() != null) {
-                int par = indexes.get(pom.getParent().getSig());
+                int par = sigToIndex.get(pom.getParent().getSig());
                 inheritance[m][par] = 1;
             }
         }
