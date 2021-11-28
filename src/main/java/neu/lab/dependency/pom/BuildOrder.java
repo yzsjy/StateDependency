@@ -3,6 +3,10 @@ package neu.lab.dependency.pom;
 import neu.lab.dependency.container.Poms;
 import neu.lab.dependency.graph.TopologicalSorting;
 import neu.lab.dependency.vo.Pom;
+import org.codehaus.plexus.util.dag.CycleDetectedException;
+import org.codehaus.plexus.util.dag.DAG;
+import org.codehaus.plexus.util.dag.TopologicalSorter;
+import org.codehaus.plexus.util.dag.Vertex;
 
 import java.util.*;
 
@@ -28,6 +32,7 @@ public class BuildOrder {
         levelSort.addAll(TopologicalSorting.i().getLevelSort(matrix));
         moduleSort = new ArrayList<>();
         getModuleSort();
+        buildList = new ArrayList<>();
     }
 
     public void copyMatrix() {
@@ -46,7 +51,7 @@ public class BuildOrder {
         Pom parent = null;
         String parentPath = projPath + "pom.xml";
         for (Pom pom : poms) {
-            if (pom.getModulePath().equals(parentPath)) {
+            if (pom.getFilePath().equals(parentPath)) {
                 parent = pom;
                 break;
             }
@@ -67,13 +72,20 @@ public class BuildOrder {
     }
 
     public void calculateBuildList() {
-        for (List<Integer> levelSort : levelSort) {
-            int[] num = new int[levelSort.size()];
-            for (int i = 0; i < levelSort.size(); i++) {
-                num[i] = moduleSort.indexOf(levelSort.get(i));
+        for (List<Integer> lSort : levelSort) {
+            int[] num = new int[lSort.size()];
+            for (int i = 0; i < lSort.size(); i++) {
+                if (!moduleSort.contains(lSort.get(i))) {
+                    num[i] = -1;
+                    continue;
+                }
+                num[i] = moduleSort.indexOf(lSort.get(i));
             }
             Arrays.sort(num);
             for (int i = 0; i < num.length; i++) {
+                if (num[i] == -1) {
+                    continue;
+                }
                 buildList.add(moduleSort.get(num[i]));
             }
         }
@@ -81,6 +93,55 @@ public class BuildOrder {
 
     public List<Integer> getBuildList() {
         return buildList;
+    }
+
+    public void build() {
+        DAG dag = new DAG();
+        Map<Integer, Pom> indexToPom = ModuleRelation.i().getIndexToPom();
+        for (int i = 0; i < matrix.length; i++) {
+            if (moduleSort.contains(i)) {
+                dag.addVertex(Integer.toString(i));
+            }
+        }
+        for (int i = 0; i < matrix.length; i++) {
+            for (int j = 0; j < matrix.length; j++) {
+                if (!moduleSort.contains(i) || !moduleSort.contains(j)) {
+                    continue;
+                }
+                if (matrix[i][j] == 1) {
+                    Vertex start = dag.getVertex(Integer.toString(i));
+                    Vertex end = dag.getVertex(Integer.toString(j));
+                    try {
+                        dag.addEdge(start, end);
+                    } catch (CycleDetectedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
+        List<String> sort = TopologicalSorter.sort(dag);
+        for (String s : sort) {
+            int index = Integer.parseInt(s);
+            Pom pom = indexToPom.get(index);
+            if (pom.getName() != null) {
+                System.out.println(pom.getName());
+            } else {
+                System.out.println(pom.getArtifactId());
+            }
+        }
+
+    }
+
+    public void print() {
+        Map<Integer, Pom> map = ModuleRelation.i().getIndexToPom();
+        for (int m : moduleSort) {
+            Pom pom = map.get(m);
+            if (pom.getName() != null) {
+                System.out.println(pom.getName());
+            } else {
+                System.out.println(pom.getArtifactId());
+            }
+        }
     }
 
 }

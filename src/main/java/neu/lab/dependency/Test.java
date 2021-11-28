@@ -2,12 +2,11 @@ package neu.lab.dependency;
 
 import neu.lab.dependency.container.Conflicts;
 import neu.lab.dependency.container.Poms;
-import neu.lab.dependency.pom.DetectUselessDep;
-import neu.lab.dependency.pom.ModuleReduce;
-import neu.lab.dependency.pom.ModuleRelation;
-import neu.lab.dependency.pom.PomParser;
+import neu.lab.dependency.handler.PomFileIO;
+import neu.lab.dependency.pom.*;
 import neu.lab.dependency.smell.DetectDupDeclare;
 import neu.lab.dependency.soot.SootRiskCg;
+import neu.lab.dependency.util.FileUtil;
 import neu.lab.dependency.vo.Conflict;
 import neu.lab.dependency.vo.Pom;
 
@@ -24,7 +23,7 @@ public class Test {
     public static String separator = File.separator.equals("/") ? "/" : "\\\\";
 
     public static void main(String[] args) {
-        String projPath = "E:\\unzip1\\onebusaway-application-modules-master\\";
+        String projPath = "D:\\githubProjects\\cache2k\\";
         PomParser.init(projPath);
         ModuleRelation.i().generateGraph();
 
@@ -38,9 +37,29 @@ public class Test {
 
 //        versionCheck(projPath);
 //        buildOptimize(projPath);
-        buildGraph(projPath);
-        findUselessDep(projPath);
+//        buildGraph(projPath);
+//        findUselessDep(projPath);
 //        detectDupDeclare(projPath);
+
+        getBuildList(projPath);
+    }
+
+    public static void getBuildList(String projPath) {
+        BuildOrder buildOrder = new BuildOrder(projPath);
+        buildOrder.calculateBuildList();
+        buildOrder.build();
+
+//        List<Integer> list = buildOrder.getBuildList();
+//        System.out.println(list.size());
+//        Map<Integer, Pom> map = ModuleRelation.i().getIndexToPom();
+//        for (int i : list) {
+//            Pom pom = map.get(i);
+//            if (pom.getName() != null) {
+//                System.out.println(pom.getName());
+//            } else {
+//                System.out.println(pom.getArtifactId());
+//            }
+//        }
     }
 
     public static void getReachMethod(String hostPath, String jarPath) {
