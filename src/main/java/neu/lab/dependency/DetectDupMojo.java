@@ -6,7 +6,7 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 
 @Mojo(
-        name = "version",
+        name = "detectDup",
         aggregator = true,
         defaultPhase = LifecyclePhase.NONE,
         threadSafe = true
