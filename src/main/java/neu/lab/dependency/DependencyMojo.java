@@ -1,25 +1,19 @@
 package neu.lab.dependency;
 
-import neu.lab.dependency.container.DepJars;
-import neu.lab.dependency.container.NodeAdapters;
-import neu.lab.dependency.util.Conf;
 import neu.lab.dependency.util.MavenUtil;
-import neu.lab.dependency.vo.DepJar;
 import org.apache.maven.artifact.factory.ArtifactFactory;
 import org.apache.maven.artifact.manager.WagonManager;
-import org.apache.maven.artifact.metadata.ArtifactMetadataSource;
 import org.apache.maven.artifact.repository.ArtifactRepository;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
-import org.apache.maven.project.path.PathTranslator;
 import org.apache.maven.settings.Settings;
 import org.apache.maven.shared.dependency.tree.DependencyNode;
 import org.apache.maven.shared.dependency.tree.DependencyTreeBuilder;
-import org.apache.maven.shared.dependency.tree.DependencyTreeBuilderException;
 
 import java.io.File;
 import java.util.List;
@@ -97,8 +91,9 @@ public abstract class DependencyMojo extends AbstractMojo {
     public List remoteArtifactRepositories;
 
     @Override
-    public void execute() {
+    public void execute() throws MojoExecutionException, MojoFailureException {
         this.getLog().info("detect start:");
+        MavenUtil.i().setMojo(this);
 
         run();
 

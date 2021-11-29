@@ -5,6 +5,7 @@ import neu.lab.dependency.vo.NodeAdapter;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.versioning.InvalidVersionSpecificationException;
 import org.apache.maven.artifact.versioning.VersionRange;
+import org.apache.maven.execution.ProjectDependencyGraph;
 import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.project.MavenProject;
 
@@ -17,6 +18,7 @@ import java.util.List;
  */
 public class MavenUtil {
     private volatile static MavenUtil instance;
+    public static String separator = File.separator.equals("/") ? "/" : "\\\\";
 
     public static MavenUtil i() {
         if (instance == null) {
@@ -50,8 +52,8 @@ public class MavenUtil {
 
     public String getName() {
         String path = getBaseDir().getAbsolutePath();
-        String tempPath = path.split("/unzip/")[1];
-        String name = tempPath.split("/pom.xml")[0];
+        String[] strings = path.split(separator);
+        String name = strings[strings.length - 1];
         return name;
     }
 
@@ -145,5 +147,14 @@ public class MavenUtil {
 
     public String getMvnRep() {
         return this.mojo.localRepository.getBasedir() + File.separator;
+    }
+
+    public List<MavenProject> getSortList() {
+        ProjectDependencyGraph graph = mojo.session.getProjectDependencyGraph();
+        return graph.getSortedProjects();
+    }
+
+    public ProjectDependencyGraph getDependencyGraph() {
+        return mojo.session.getProjectDependencyGraph();
     }
 }

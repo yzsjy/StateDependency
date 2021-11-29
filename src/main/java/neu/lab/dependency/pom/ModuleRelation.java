@@ -1,7 +1,11 @@
 package neu.lab.dependency.pom;
 
 import neu.lab.dependency.container.Poms;
+import neu.lab.dependency.graph.GenerateGraphviz;
+import neu.lab.dependency.util.MavenUtil;
 import neu.lab.dependency.vo.Pom;
+import org.apache.maven.execution.ProjectDependencyGraph;
+import org.apache.maven.project.MavenProject;
 
 import java.util.HashMap;
 import java.util.List;
@@ -90,5 +94,23 @@ public class ModuleRelation {
                 inheritance[m][par] = 1;
             }
         }
+    }
+
+    public void buildGraph() {
+        ProjectDependencyGraph graph = MavenUtil.i().getDependencyGraph();
+        List<MavenProject> projects = graph.getSortedProjects();
+        int size = projects.size();
+        modules = new int[size][size];
+        for (MavenProject project : projects) {
+            int i = projects.indexOf(project);
+            List<MavenProject> childs = graph.getUpstreamProjects(project, false);
+            if (!childs.isEmpty()) {
+                for (MavenProject child : childs) {
+                    int j = projects.indexOf(child);
+                    modules[i][j] = 1;
+                }
+            }
+        }
+        GenerateGraphviz.i().moduleGraph(modules, projects, MavenUtil.i().getName(), "mavenModule");
     }
 }
