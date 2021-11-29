@@ -5,6 +5,8 @@ import neu.lab.dependency.util.MavenUtil;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 
+import java.io.File;
+
 @Mojo(
         name = "uselessDep",
         aggregator = true,
@@ -14,7 +16,7 @@ import org.apache.maven.plugins.annotations.Mojo;
 public class UselessDepMojo extends DependencyMojo {
     @Override
     public void run() {
-        String projPath = MavenUtil.i().getBaseDir().getAbsolutePath();
+        String projPath = MavenUtil.i().getBaseDir().getAbsolutePath() + File.separator;
         UselessDep uselessDep = new UselessDep(projPath);
         uselessDep.init();
     }
