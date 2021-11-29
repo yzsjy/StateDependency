@@ -3,8 +3,6 @@ package neu.lab.dependency.util;
 import neu.lab.dependency.DependencyMojo;
 import neu.lab.dependency.vo.NodeAdapter;
 import org.apache.maven.artifact.Artifact;
-import org.apache.maven.artifact.resolver.ArtifactNotFoundException;
-import org.apache.maven.artifact.resolver.ArtifactResolutionException;
 import org.apache.maven.artifact.versioning.InvalidVersionSpecificationException;
 import org.apache.maven.artifact.versioning.VersionRange;
 import org.apache.maven.plugin.logging.Log;
@@ -18,9 +16,16 @@ import java.util.List;
  * @author SUNJUNYAN
  */
 public class MavenUtil {
-    private static MavenUtil instance = new MavenUtil();
+    private volatile static MavenUtil instance;
 
     public static MavenUtil i() {
+        if (instance == null) {
+            synchronized (MavenUtil.class) {
+                if (instance == null) {
+                    instance = new MavenUtil();
+                }
+            }
+        }
         return instance;
     }
 
@@ -52,10 +57,6 @@ public class MavenUtil {
 
     public void setMojo(DependencyMojo mojo) {
         this.mojo = mojo;
-    }
-
-    public void resolve(Artifact artifact) throws ArtifactResolutionException, ArtifactNotFoundException {
-        mojo.resolver.resolve(artifact, mojo.remoteRepositories, mojo.localRepository);
     }
 
     public Log getLog() {

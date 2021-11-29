@@ -14,13 +14,20 @@ import java.util.Set;
  * @author SUNJUNYAN
  */
 public class SootRiskCg {
-    private static SootRiskCg instance = new SootRiskCg();
+    private volatile static SootRiskCg instance;
 
     private SootRiskCg() {
 
     }
 
     public static SootRiskCg i() {
+        if (instance == null) {
+            synchronized (SootRiskCg.class) {
+                if (instance == null) {
+                    instance = new SootRiskCg();
+                }
+            }
+        }
         return instance;
     }
 

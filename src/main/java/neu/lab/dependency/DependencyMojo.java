@@ -9,7 +9,6 @@ import org.apache.maven.artifact.factory.ArtifactFactory;
 import org.apache.maven.artifact.manager.WagonManager;
 import org.apache.maven.artifact.metadata.ArtifactMetadataSource;
 import org.apache.maven.artifact.repository.ArtifactRepository;
-import org.apache.maven.artifact.resolver.ArtifactResolver;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -56,8 +55,6 @@ public abstract class DependencyMojo extends AbstractMojo {
     @Component
     public ArtifactFactory factory;
 
-    @Component
-    public ArtifactResolver resolver;
     DependencyNode root;
 
     @Parameter(property = "ignoreProvidedScope", defaultValue = "false")
@@ -77,9 +74,6 @@ public abstract class DependencyMojo extends AbstractMojo {
 
     @Parameter(property = "resultPath")
     public String resultPath = "." + File.separator;
-
-    @Component
-    public PathTranslator pathTranslator;
 
     @Parameter(property = "allowSnapshots", defaultValue = "true")
     public boolean allowSnapshots;
@@ -102,67 +96,13 @@ public abstract class DependencyMojo extends AbstractMojo {
     @Parameter( defaultValue = "${project.remoteArtifactRepositories}", readonly = true )
     public List remoteArtifactRepositories;
 
-    @Component
-    public ArtifactMetadataSource artifactMetadataSource;
-
-    public int systemSize = 0;
-
-    public long systemFileSize = 0;
-
-    protected void initGlobalVar() throws Exception {
-        MavenUtil.i().setMojo(this);
-        Conf.outDir = resultPath;
-        Conf.append = append;
-
-        NodeAdapters.init(root);
-        DepJars.init(NodeAdapters.i());
-        validateSystemSize();
-    }
-
-    private void validateSystemSize() throws Exception {
-
-        for (DepJar depJar : DepJars.i().getAllDepJar()) {
-            if (depJar.isSelected()) {
-                systemSize++;
-                for (String filePath : depJar.getJarFilePaths(true)) {
-                    systemFileSize = systemFileSize + new File(filePath).length();
-                }
-            }
-        }
-
-        MavenUtil.i().getLog().info("tree size:" + DepJars.i().getAllDepJar().size() + ", used size:" + systemSize
-                + ", usedFile size:" + systemFileSize / 1000);
-
-    }
-
     @Override
-    public void execute() throws MojoExecutionException {
-        this.getLog().info("method detect start:");
-        long startTime = System.currentTimeMillis();
-        String pckType = project.getPackaging();
-        if ("jar".equals(pckType) || "war".equals(pckType) || "maven-plugin".equals(pckType)
-                || "bundle".equals(pckType)) {
-            try {
-                // project.
-                root = dependencyTreeBuilder.buildDependencyTree(project, localRepository, null);
-            } catch (DependencyTreeBuilderException e) {
-                throw new MojoExecutionException(e.getMessage());
-            }
-            try {
-                initGlobalVar();
-            } catch (Exception e) {
-                MavenUtil.i().getLog().error(e);
-                throw new MojoExecutionException("project size error!");
-            }
-            run();
+    public void execute() {
+        this.getLog().info("detect start:");
 
-        } else {
-            this.getLog()
-                    .info("this project fail because package type is neither jar nor war:" + project.getGroupId() + ":"
-                            + project.getArtifactId() + ":" + project.getVersion() + "@"
-                            + project.getFile().getAbsolutePath());
-        }
-        this.getLog().debug("method detect end");
+        run();
+
+        this.getLog().debug("detect end");
     }
 
     /**

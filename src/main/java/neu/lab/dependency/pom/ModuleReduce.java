@@ -12,7 +12,7 @@ import java.util.*;
 
 public class ModuleReduce {
 
-    private static ModuleReduce instance;
+    private volatile static ModuleReduce instance;
 
     private int[][] temp;
     private Map<String, Integer> sigToIndex;
@@ -29,7 +29,11 @@ public class ModuleReduce {
 
     public static ModuleReduce i() {
         if (instance == null) {
-            instance = new ModuleReduce();
+            synchronized (ModuleReduce.class) {
+                synchronized (ModuleReduce.class) {
+                    instance = new ModuleReduce();
+                }
+            }
         }
         return instance;
     }

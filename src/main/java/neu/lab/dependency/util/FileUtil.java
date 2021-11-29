@@ -9,16 +9,20 @@ import java.io.File;
  */
 public class FileUtil {
 
-    private static FileUtil instance;
+    private volatile static FileUtil instance;
 
     public static FileUtil i() {
         if (instance == null) {
-            instance = new FileUtil();
+            synchronized (FileUtil.class) {
+                if (instance == null) {
+                    instance = new FileUtil();
+                }
+            }
         }
         return instance;
     }
 
-    public FileUtil() {
+    private FileUtil() {
 
     }
 

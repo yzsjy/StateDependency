@@ -13,7 +13,7 @@ import java.io.IOException;
  */
 public class ArtifactResolver {
 
-    private static ArtifactResolver instance;
+    private volatile static ArtifactResolver instance;
 
     private ArtifactResolver() {
 
@@ -21,7 +21,11 @@ public class ArtifactResolver {
 
     public static ArtifactResolver i() {
         if (instance == null) {
-            instance = new ArtifactResolver();
+            synchronized (ArtifactResolver.class) {
+                if (instance == null) {
+                    instance = new ArtifactResolver();
+                }
+            }
         }
         return instance;
     }

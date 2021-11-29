@@ -29,26 +29,20 @@ public class NodeAdapter {
     }
 
     private void resolve() {
-        try {
-            if (!isInnerProject()) {
-                // inner project is target/classes 内部项目是target/classes
-                if (null == node.getPremanagedVersion()) {
-                    // artifact version of node is the version declared in pom. 节点的构件版本是POM中声明的版本。
-                    if (!node.getArtifact().isResolved()) {
-                        MavenUtil.i().resolve(node.getArtifact());
-                    }
-                } else {
-                    Artifact artifact = MavenUtil.i().getArtifact(getGroupId(), getArtifactId(), getVersion(),
-                            getType(), getClassifier(), getScope());
-                    if (!artifact.isResolved()) {
-                        MavenUtil.i().resolve(artifact);
-                    }
+        if (!isInnerProject()) {
+            // inner project is target/classes 内部项目是target/classes
+            if (null == node.getPremanagedVersion()) {
+                // artifact version of node is the version declared in pom. 节点的构件版本是POM中声明的版本。
+                if (!node.getArtifact().isResolved()) {
+//                        MavenUtil.i().resolve(node.getArtifact());
+                }
+            } else {
+                Artifact artifact = MavenUtil.i().getArtifact(getGroupId(), getArtifactId(), getVersion(),
+                        getType(), getClassifier(), getScope());
+                if (!artifact.isResolved()) {
+//                        MavenUtil.i().resolve(artifact);
                 }
             }
-        } catch (ArtifactResolutionException e) {
-            MavenUtil.i().getLog().warn("cant resolve " + this.toString());
-        } catch (ArtifactNotFoundException e) {
-            MavenUtil.i().getLog().warn("cant resolve " + this.toString());
         }
     }
 
@@ -191,21 +185,15 @@ public class NodeAdapter {
                 // filePaths = UtilGetter.i().getSrcPaths();
             } else {// dependency is repository address
 
-                try {
-                    if (null == node.getPremanagedVersion()) {
-                        filePaths.add(node.getArtifact().getFile().getAbsolutePath());
-                    } else {
-                        Artifact artifact = MavenUtil.i().getArtifact(getGroupId(), getArtifactId(), getVersion(),
-                                getType(), getClassifier(), getScope());
-                        if (!artifact.isResolved()) {
-                            MavenUtil.i().resolve(artifact);
-                        }
-                        filePaths.add(artifact.getFile().getAbsolutePath());
+                if (null == node.getPremanagedVersion()) {
+                    filePaths.add(node.getArtifact().getFile().getAbsolutePath());
+                } else {
+                    Artifact artifact = MavenUtil.i().getArtifact(getGroupId(), getArtifactId(), getVersion(),
+                            getType(), getClassifier(), getScope());
+                    if (!artifact.isResolved()) {
+//                            MavenUtil.i().resolve(artifact);
                     }
-                } catch (ArtifactResolutionException e) {
-                    MavenUtil.i().getLog().warn("cant resolve " + this.toString());
-                } catch (ArtifactNotFoundException e) {
-                    MavenUtil.i().getLog().warn("cant resolve " + this.toString());
+                    filePaths.add(artifact.getFile().getAbsolutePath());
                 }
 
             }

@@ -17,11 +17,15 @@ import java.util.regex.Pattern;
  * @author SUNJUNYAN
  */
 public class ModuleParser {
-    private static ModuleParser instance;
+    private volatile static ModuleParser instance;
 
     public static ModuleParser i() {
         if (instance == null) {
-            instance = new ModuleParser();
+            synchronized (ModuleParser.class) {
+                if (instance == null) {
+                    instance = new ModuleParser();
+                }
+            }
         }
         return instance;
     }

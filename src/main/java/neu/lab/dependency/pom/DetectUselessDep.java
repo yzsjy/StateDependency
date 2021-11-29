@@ -11,7 +11,7 @@ import java.util.*;
 
 public class DetectUselessDep {
 
-    private static DetectUselessDep instance;
+    private volatile static DetectUselessDep instance;
 
     private int[][] modules;
     private int[][] temp;
@@ -29,7 +29,11 @@ public class DetectUselessDep {
 
     public static DetectUselessDep i() {
         if (instance == null) {
-            instance = new DetectUselessDep();
+            synchronized (DetectUselessDep.class) {
+                if (instance == null) {
+                    instance = new DetectUselessDep();
+                }
+            }
         }
         return instance;
     }

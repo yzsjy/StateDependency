@@ -11,7 +11,7 @@ import java.util.*;
  */
 public class PomParser {
 
-    private static PomParser instance;
+    private volatile static PomParser instance;
 
     private String projPath;
     private Set<String> visited;
@@ -32,7 +32,11 @@ public class PomParser {
 
     public static PomParser i() {
         if (instance == null) {
-            instance = new PomParser();
+            synchronized (PomParser.class) {
+                if (instance == null) {
+                    instance = new PomParser();
+                }
+            }
         }
         return instance;
     }

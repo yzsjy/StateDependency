@@ -24,7 +24,7 @@ import static guru.nidi.graphviz.model.Factory.*;
 
 public class GenerateGraphviz {
 
-    private static GenerateGraphviz instance;
+    private volatile static GenerateGraphviz instance;
 
     private GenerateGraphviz() {
 

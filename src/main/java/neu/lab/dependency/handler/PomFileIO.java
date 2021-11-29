@@ -15,13 +15,21 @@ import java.io.*;
 public class PomFileIO {
     private static String errorpath = Conf.outDir + "Error.txt";
 
-    private static PomFileIO instance;
+    private volatile static PomFileIO instance;
 
     public static PomFileIO i() {
         if (instance == null) {
-            instance = new PomFileIO();
+            synchronized (PomFileIO.class) {
+                if (instance == null) {
+                    instance = new PomFileIO();
+                }
+            }
         }
         return instance;
+    }
+
+    private PomFileIO() {
+
     }
 
     public Model parsePomFileToModel(String pomPath) {

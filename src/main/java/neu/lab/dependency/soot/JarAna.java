@@ -11,7 +11,7 @@ import java.util.*;
  */
 public class JarAna {
 
-    private static JarAna instance = new JarAna();
+    private volatile static JarAna instance;
 
     private JarAna() {
 
@@ -19,7 +19,11 @@ public class JarAna {
 
     public static JarAna i() {
         if (instance == null) {
-            instance = new JarAna();
+            synchronized (JarAna.class) {
+                if (instance == null) {
+                    instance = new JarAna();
+                }
+            }
         }
         return instance;
     }

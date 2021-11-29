@@ -24,11 +24,15 @@ import java.util.List;
 
 public class PomOperation {
 
-    private static PomOperation instance;
+    private volatile static PomOperation instance;
 
     public static PomOperation i() {
         if (instance == null) {
-            instance = new PomOperation();
+            synchronized (PomOperation.class) {
+                if (instance == null) {
+                    instance = new PomOperation();
+                }
+            }
         }
         return instance;
     }

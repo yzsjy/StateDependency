@@ -20,7 +20,7 @@ public class Conflicts {
     private Map<String, Integer> sigToIndex;
     private Map<Integer, String> indexToSig;
 
-    private static Conflicts instance;
+    private volatile static Conflicts instance;
 
     public static void init() {
         instance = new Conflicts();
@@ -28,7 +28,11 @@ public class Conflicts {
 
     public static Conflicts i() {
         if (instance == null) {
-            instance = new Conflicts();
+            synchronized (Conflicts.class) {
+                if (instance == null) {
+                    instance = new Conflicts();
+                }
+            }
         }
         return instance;
     }

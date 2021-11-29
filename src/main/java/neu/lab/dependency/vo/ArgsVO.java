@@ -12,13 +12,20 @@ import java.util.List;
  */
 public class ArgsVO {
 
-    public static ArgsVO instance = new ArgsVO();
+    private volatile static ArgsVO instance;
 
     private ArgsVO() {
 
     }
 
     public static ArgsVO i() {
+        if (instance == null) {
+            synchronized (ArgsVO.class) {
+                if (instance == null) {
+                    instance = new ArgsVO();
+                }
+            }
+        }
         return instance;
     }
 

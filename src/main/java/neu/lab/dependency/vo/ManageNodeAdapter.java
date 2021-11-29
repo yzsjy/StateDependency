@@ -30,18 +30,12 @@ public class ManageNodeAdapter extends NodeAdapter {
         type = nodeAdapter.getType();
         scope = nodeAdapter.getScope();
 
-        try {
-            artifact = MavenUtil.i().getArtifact(getGroupId(), getArtifactId(), getVersion(), getType(),
-                    getClassifier(), getScope());
-            if (!artifact.isResolved()) {
-                MavenUtil.i().resolve(artifact);
-            }
-
-        } catch (ArtifactResolutionException e) {
-            MavenUtil.i().getLog().warn("cant resolve " + this.toString());
-        } catch (ArtifactNotFoundException e) {
-            MavenUtil.i().getLog().warn("cant resolve " + this.toString());
+        artifact = MavenUtil.i().getArtifact(getGroupId(), getArtifactId(), getVersion(), getType(),
+                getClassifier(), getScope());
+        if (!artifact.isResolved()) {
+//                MavenUtil.i().resolve(artifact);
         }
+
     }
 
     @Override

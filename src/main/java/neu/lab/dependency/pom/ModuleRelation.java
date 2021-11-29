@@ -20,11 +20,13 @@ public class ModuleRelation {
     private Map<Integer, String> indexToSig;
     private Map<Integer, Pom> indexToPom;
 
-    private static ModuleRelation instance;
+    private volatile static ModuleRelation instance;
 
     public static ModuleRelation i() {
         if (instance == null) {
-            instance = new ModuleRelation();
+            synchronized (ModuleRelation.class) {
+                instance = new ModuleRelation();
+            }
         }
         return instance;
     }
