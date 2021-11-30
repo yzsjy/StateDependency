@@ -188,4 +188,88 @@ public class GenerateGraphviz {
             e.printStackTrace();
         }
     }
+
+    public void moduleDetailGraph(int[][] map, List<MavenProject> projects, String projName, String fileName) {
+        int size = projects.size();
+        Node[] nodes = new Node[size];
+        for (int i = 0; i < size; i++) {
+            MavenProject project = projects.get(i);
+            if (project.getName() == null) {
+                nodes[i] = node(project.getGroupId() + ":" + project.getArtifactId() + ":" + project.getVersion());
+            } else {
+                nodes[i] = node(project.getName());
+            }
+        }
+
+        List<Node> nodeList = new ArrayList<>();
+        for (int i = 0; i < map.length; i++) {
+            List<Link> links = new ArrayList<>();
+            for (int j = 0; j < map[i].length; j++) {
+                if (map[i][j] == 1) {
+                    links.add(to(nodes[j]));
+                } else if (map[i][j] == 2) {
+                    links.add(to(nodes[j]).with(Color.RED));
+                } else if (map[i][j] == 3) {
+                    links.add(to(nodes[j]).with(Color.BLUE));
+                } else if (map[i][j] == 4) {
+                    links.add(to(nodes[j]).with(Color.BROWN).with(Arrow.NORMAL.open()));
+                }
+            }
+            nodeList.add(nodes[i].link(links));
+        }
+
+        Graph g = graph("example").directed().graphAttr().with(Rank.dir(LEFT_TO_RIGHT)).with(nodeList);
+        try {
+            Graphviz.fromGraph(g).render(Format.PNG).toFile(new File(Conf.Dir + "graph" + File.separator + projName + File.separator + fileName + ".png"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void moduleGraph(int[][] map, List<MavenProject> projects, String projName, int choice) {
+        int size = projects.size();
+        Node[] nodes = new Node[size];
+        for (int i = 0; i < size; i++) {
+            MavenProject project = projects.get(i);
+            if (project.getName() == null) {
+                nodes[i] = node(project.getGroupId() + ":" + project.getArtifactId() + ":" + project.getVersion());
+            } else {
+                nodes[i] = node(project.getName());
+            }
+        }
+
+        List<Node> nodeList = new ArrayList<>();
+        for (int i = 0; i < map.length; i++) {
+            List<Link> links = new ArrayList<>();
+            for (int j = 0; j < map[i].length; j++) {
+                if (map[i][j] == choice) {
+                    if (choice <= 3) {
+                        links.add(to(nodes[j]));
+                    } else {
+                        links.add(to(nodes[j]).with(Arrow.NORMAL.open()));
+                    }
+                }
+            }
+            nodeList.add(nodes[i].link(links));
+        }
+
+        Graph g = graph("example").directed().graphAttr().with(Rank.dir(LEFT_TO_RIGHT)).with(nodeList);
+        try {
+            Graphviz.fromGraph(g).render(Format.PNG).toFile(new File(Conf.Dir + "graph" + File.separator + projName + File.separator + getFileName(choice) + ".png"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public String getFileName(int type) {
+        if (type == 1) {
+            return "mavenModule";
+        } else if (type == 2) {
+            return "mavenPlugin";
+        } else if (type == 3) {
+            return "mavenExtension";
+        } else {
+            return "mavenInheritance";
+        }
+    }
 }

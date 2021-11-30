@@ -1,10 +1,12 @@
-package neu.lab.dependency.pom;
+package neu.lab.dependency.graph;
 
 import neu.lab.dependency.container.Poms;
-import neu.lab.dependency.graph.GenerateGraphviz;
 import neu.lab.dependency.util.MavenUtil;
 import neu.lab.dependency.vo.Pom;
 import org.apache.maven.execution.ProjectDependencyGraph;
+import org.apache.maven.model.Dependency;
+import org.apache.maven.model.Extension;
+import org.apache.maven.model.Plugin;
 import org.apache.maven.project.MavenProject;
 
 import java.util.HashMap;
@@ -15,7 +17,7 @@ import java.util.Set;
 /**
  * @author SUNJUNYAN
  */
-public class ModuleRelation {
+public class ModuleGraph {
 
     private int[][] modules;
     private int[][] inheritance;
@@ -24,12 +26,12 @@ public class ModuleRelation {
     private Map<Integer, String> indexToSig;
     private Map<Integer, Pom> indexToPom;
 
-    private volatile static ModuleRelation instance;
+    private volatile static ModuleGraph instance;
 
-    public static ModuleRelation i() {
+    public static ModuleGraph i() {
         if (instance == null) {
-            synchronized (ModuleRelation.class) {
-                instance = new ModuleRelation();
+            synchronized (ModuleGraph.class) {
+                instance = new ModuleGraph();
             }
         }
         return instance;
@@ -59,7 +61,7 @@ public class ModuleRelation {
         return indexToPom;
     }
 
-    public static ModuleRelation getInstance() {
+    public static ModuleGraph getInstance() {
         return instance;
     }
 
@@ -94,23 +96,5 @@ public class ModuleRelation {
                 inheritance[m][par] = 1;
             }
         }
-    }
-
-    public void buildGraph() {
-        ProjectDependencyGraph graph = MavenUtil.i().getDependencyGraph();
-        List<MavenProject> projects = graph.getSortedProjects();
-        int size = projects.size();
-        modules = new int[size][size];
-        for (MavenProject project : projects) {
-            int i = projects.indexOf(project);
-            List<MavenProject> childs = graph.getUpstreamProjects(project, false);
-            if (!childs.isEmpty()) {
-                for (MavenProject child : childs) {
-                    int j = projects.indexOf(child);
-                    modules[i][j] = 1;
-                }
-            }
-        }
-        GenerateGraphviz.i().moduleGraph(modules, projects, MavenUtil.i().getName(), "mavenModule");
     }
 }

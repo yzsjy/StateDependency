@@ -1,6 +1,7 @@
 package neu.lab.dependency.pom;
 
 import neu.lab.dependency.container.Poms;
+import neu.lab.dependency.graph.ModuleGraph;
 import neu.lab.dependency.graph.TopologicalSorting;
 import neu.lab.dependency.vo.Pom;
 import org.codehaus.plexus.util.dag.CycleDetectedException;
@@ -27,7 +28,7 @@ public class BuildOrder {
     public void init() {
         copyMatrix();
         indexes = new HashMap<>();
-        indexes.putAll(ModuleRelation.i().getSigToIndex());
+        indexes.putAll(ModuleGraph.i().getSigToIndex());
         levelSort = new ArrayList<>();
         levelSort.addAll(TopologicalSorting.i().getLevelSort(matrix));
         moduleSort = new ArrayList<>();
@@ -36,7 +37,7 @@ public class BuildOrder {
     }
 
     public void copyMatrix() {
-        int[][] graph = ModuleRelation.i().getModules();
+        int[][] graph = ModuleGraph.i().getModules();
         int len = graph.length;
         matrix = new int[len][len];
         for (int i = 0; i < len; i++) {
@@ -97,7 +98,7 @@ public class BuildOrder {
 
     public void build() {
         DAG dag = new DAG();
-        Map<Integer, Pom> indexToPom = ModuleRelation.i().getIndexToPom();
+        Map<Integer, Pom> indexToPom = ModuleGraph.i().getIndexToPom();
         for (int i = 0; i < matrix.length; i++) {
             if (moduleSort.contains(i)) {
                 dag.addVertex(Integer.toString(i));
@@ -133,7 +134,7 @@ public class BuildOrder {
     }
 
     public void print() {
-        Map<Integer, Pom> map = ModuleRelation.i().getIndexToPom();
+        Map<Integer, Pom> map = ModuleGraph.i().getIndexToPom();
         for (int m : moduleSort) {
             Pom pom = map.get(m);
             if (pom.getName() != null) {

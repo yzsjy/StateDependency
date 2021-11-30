@@ -1,6 +1,7 @@
 package neu.lab.dependency.smell;
 
 import neu.lab.dependency.container.Poms;
+import neu.lab.dependency.graph.ModuleGraph;
 import neu.lab.dependency.pom.*;
 import neu.lab.dependency.util.Conf;
 import neu.lab.dependency.util.PomOperation;
@@ -21,7 +22,7 @@ public class UselessDep {
 
     public void init() {
         PomParser.init(projPath);
-        ModuleRelation.i().generateGraph();
+        ModuleGraph.i().generateGraph();
         reduceModule();
     }
 

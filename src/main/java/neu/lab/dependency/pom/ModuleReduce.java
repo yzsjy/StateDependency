@@ -2,6 +2,7 @@ package neu.lab.dependency.pom;
 
 import neu.lab.dependency.container.Poms;
 import neu.lab.dependency.graph.GenerateGraphviz;
+import neu.lab.dependency.graph.ModuleGraph;
 import neu.lab.dependency.graph.TransitiveReduce;
 import neu.lab.dependency.soot.SootRiskCg;
 import neu.lab.dependency.util.PomOperation;
@@ -39,10 +40,10 @@ public class ModuleReduce {
     }
 
     public void init() {
-        int[][] modules = ModuleRelation.i().getModules();
-        sigToIndex = ModuleRelation.i().getSigToIndex();
-        pomToIndex = ModuleRelation.i().getPomToIndex();
-        indexToSig = ModuleRelation.i().getIndexToSig();
+        int[][] modules = ModuleGraph.i().getModules();
+        sigToIndex = ModuleGraph.i().getSigToIndex();
+        pomToIndex = ModuleGraph.i().getPomToIndex();
+        indexToSig = ModuleGraph.i().getIndexToSig();
         visit = new HashSet<>();
         reduceEdges = new ArrayList<>();
         canReduce = new ArrayList<>();

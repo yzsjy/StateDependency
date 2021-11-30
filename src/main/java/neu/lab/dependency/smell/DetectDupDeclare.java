@@ -22,7 +22,7 @@ public class DetectDupDeclare {
 
     public void init() {
         PomParser.init(projPath);
-//        ModuleRelation.i().generateGraph();
+//        ModuleGraph.i().generateGraph();
         System.out.println(Poms.i().getPoms().size());
 
 //        detect();

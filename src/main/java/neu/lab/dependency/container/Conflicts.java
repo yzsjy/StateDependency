@@ -1,7 +1,7 @@
 package neu.lab.dependency.container;
 
 import neu.lab.dependency.graph.GenerateGraphviz;
-import neu.lab.dependency.pom.ModuleRelation;
+import neu.lab.dependency.graph.ModuleGraph;
 import neu.lab.dependency.vo.Conflict;
 import neu.lab.dependency.vo.Pom;
 
@@ -39,10 +39,10 @@ public class Conflicts {
 
     private Conflicts() {
         container = new ArrayList<>();
-        modules = ModuleRelation.i().getModules();
-        inheritance = ModuleRelation.i().getInheritance();
-        sigToIndex = ModuleRelation.i().getSigToIndex();
-        indexToSig = ModuleRelation.i().getIndexToSig();
+        modules = ModuleGraph.i().getModules();
+        inheritance = ModuleGraph.i().getInheritance();
+        sigToIndex = ModuleGraph.i().getSigToIndex();
+        indexToSig = ModuleGraph.i().getIndexToSig();
         detectConflicts();
     }
 

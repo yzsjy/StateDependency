@@ -1,6 +1,7 @@
 package neu.lab.dependency.pom;
 
 import neu.lab.dependency.container.Poms;
+import neu.lab.dependency.graph.ModuleGraph;
 import neu.lab.dependency.vo.DepInfo;
 import neu.lab.dependency.vo.Pom;
 
@@ -78,9 +79,9 @@ public class PomParser {
         String projPath = "D:\\githubProject\\blueocean-plugin\\";
         PomParser pomParser = new PomParser(projPath);
         pomParser.parseProject();
-        ModuleRelation.i().generateGraph();
-        int[][] modules = ModuleRelation.i().getModules();
-        int[][] inheritance = ModuleRelation.i().getInheritance();
-        Map<String, Integer> indexes = ModuleRelation.i().getSigToIndex();
+        ModuleGraph.i().generateGraph();
+        int[][] modules = ModuleGraph.i().getModules();
+        int[][] inheritance = ModuleGraph.i().getInheritance();
+        Map<String, Integer> indexes = ModuleGraph.i().getSigToIndex();
     }
 }
