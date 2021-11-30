@@ -1,5 +1,6 @@
 package neu.lab.dependency;
 
+import neu.lab.dependency.util.Conf;
 import neu.lab.dependency.util.MavenUtil;
 import org.apache.maven.artifact.factory.ArtifactFactory;
 import org.apache.maven.artifact.manager.WagonManager;
@@ -94,6 +95,7 @@ public abstract class DependencyMojo extends AbstractMojo {
     public void execute() throws MojoExecutionException, MojoFailureException {
         this.getLog().info("detect start:");
         MavenUtil.i().setMojo(this);
+        Conf.setDir(resultPath);
 
         run();
 

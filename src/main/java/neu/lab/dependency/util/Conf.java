@@ -15,4 +15,9 @@ public class Conf {
 //    public static String Dir = "E:\\RunTest\\MultiModule\\";
     public static String Dir = "D:\\test\\";
 //    public static String Dir = "/home/b406/sunjunyan/autoExecLinux/output/";
+
+
+    public static void setDir(String dir) {
+        Dir = dir;
+    }
 }
