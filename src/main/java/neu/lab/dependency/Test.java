@@ -2,11 +2,10 @@ package neu.lab.dependency;
 
 import neu.lab.dependency.container.Conflicts;
 import neu.lab.dependency.container.Poms;
-import neu.lab.dependency.handler.PomFileIO;
+import neu.lab.dependency.graph.ModuleGraph;
 import neu.lab.dependency.pom.*;
 import neu.lab.dependency.smell.DetectDupDeclare;
 import neu.lab.dependency.soot.SootRiskCg;
-import neu.lab.dependency.util.FileUtil;
 import neu.lab.dependency.vo.Conflict;
 import neu.lab.dependency.vo.Pom;
 
@@ -23,9 +22,9 @@ public class Test {
     public static String separator = File.separator.equals("/") ? "/" : "\\\\";
 
     public static void main(String[] args) {
-        String projPath = "D:\\githubProjects\\cache2k\\";
+        String projPath = "D:\\githubProject\\quickfixj-master\\";
         PomParser.init(projPath);
-        ModuleRelation.i().generateGraph();
+        ModuleGraph.i().generateGraph();
 
 
 
@@ -35,13 +34,13 @@ public class Test {
 //        String hostPath = "";
 //        getReachMethod(hostPath, jarPath);
 
-//        versionCheck(projPath);
+        versionCheck(projPath);
 //        buildOptimize(projPath);
 //        buildGraph(projPath);
 //        findUselessDep(projPath);
 //        detectDupDeclare(projPath);
 
-        getBuildList(projPath);
+//        getBuildList(projPath);
     }
 
     public static void getBuildList(String projPath) {
@@ -51,7 +50,7 @@ public class Test {
 
 //        List<Integer> list = buildOrder.getBuildList();
 //        System.out.println(list.size());
-//        Map<Integer, Pom> map = ModuleRelation.i().getIndexToPom();
+//        Map<Integer, Pom> map = ModuleGraph.i().getIndexToPom();
 //        for (int i : list) {
 //            Pom pom = map.get(i);
 //            if (pom.getName() != null) {
